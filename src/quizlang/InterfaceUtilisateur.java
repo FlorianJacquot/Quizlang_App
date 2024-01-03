@@ -289,14 +289,14 @@ public class InterfaceUtilisateur extends JFrame {
         gestionnaire.deleteTeacher(id);
 //        System.out.println("prof censé être supprimé");
         // Fermez la session et revenez à la page de connexion
-        new PageConnexionGUI(gestionnaire);
+        new InterfaceUtilisateur(gestionnaire);
     }
     
     private void supprimerCompteApprenant(String id) {
     	gestionnaire.deleteLearner(id);
 //        System.out.println("prof censé être supprimé");
     	// Fermez la session et revenez à la page de connexion
-    	new PageConnexionGUI(gestionnaire);
+    	new InterfaceUtilisateur(gestionnaire);
     }
 
     public void menuCreateApprenant() {
@@ -400,7 +400,7 @@ public class InterfaceUtilisateur extends JFrame {
 	            	JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");
 	            	
 	            	menuFrame.dispose();
-                    new PageConnexionGUI(gestionnaire);
+                    new InterfaceUtilisateur(gestionnaire);
             	} else {
             		JOptionPane.showMessageDialog(menuFrame, "Veuillez remplir tous les champs.");
             	}
@@ -487,7 +487,7 @@ public class InterfaceUtilisateur extends JFrame {
                     JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");
 
                     menuFrame.dispose();
-                    new PageConnexionGUI(gestionnaire);
+                    new InterfaceUtilisateur(gestionnaire);
                 } else {
                     JOptionPane.showMessageDialog(menuFrame, "Veuillez remplir tous les champs.");
                 }
