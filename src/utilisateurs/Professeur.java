@@ -10,7 +10,8 @@ import quizlang.Langue;
  * Elle a un attribut 'langue' qui représente la langue que le professeur enseigne.
  */
 public class Professeur extends Utilisateur {
-	private String langue;
+//	private String langue;
+	private Langue langue;
 //    private List<Exercice> listeExercices;
 	
 	/*
@@ -19,13 +20,13 @@ public class Professeur extends Utilisateur {
 	 * @param login le login du professeur
 	 * @param langue la langue enseignée par le professeur
 	 */
-	public Professeur(String id, String motDePasse, String nom, String prenom, String langue) {
+	public Professeur(String id, String motDePasse, String nom, String prenom, Langue langue) {
 		super(id, motDePasse, nom, prenom);
 		this.langue = langue;
 	}
 	
 	public String getLanguage() {
-		return langue;
+		return langue.getLangue();
 	}
 	
 //    /**

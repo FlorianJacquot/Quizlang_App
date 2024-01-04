@@ -9,19 +9,29 @@ package quizlang;
  */
 public enum Langue {
 
-    FR, JP;
+    FR("Français"), JP("Japonais");
 	
-	public Langue getLanguageFromString(String langue) {
-		switch(langue) {
-		case "Français":
-			return Langue.FR;
-			
-		case "Japonais":
-			return Langue.JP;
-		
-		default:
-			return null;
-		
-		}
+	private String string;
+
+	private Langue(String string) {
+		this.string = string;
 	}
+	
+	public String getLangue() {
+		return string;
+	}
+	
+//	public Langue getLanguageFromString(String langue) {
+//		switch(langue) {
+//		case "Français":
+//			return Langue.FR;
+//			
+//		case "Japonais":
+//			return Langue.JP;
+//		
+//		default:
+//			return null;
+//		
+//		}
+//	}
 }

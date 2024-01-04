@@ -480,8 +480,15 @@ public class InterfaceUtilisateur extends JFrame {
                     String langue = (String) comboLangue.getSelectedItem();
 
                     String passwordString = new String(mdp);
+                    
+                    Langue langueProf;
+                    if (langue.equals("Français")) {
+                    	langueProf = Langue.FR;
+                    } else {
+                    	langueProf = Langue.JP;
+                    }
 
-                    Professeur nouveauProfesseur = new Professeur(id, passwordString, nom, prenom, langue);
+					Professeur nouveauProfesseur = new Professeur(id, passwordString, nom, prenom, langueProf);
                     gestionnaire.addTeacher(nouveauProfesseur, true);
                     
                     JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");
