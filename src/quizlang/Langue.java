@@ -21,17 +21,14 @@ public enum Langue {
 		return string;
 	}
 	
-//	public Langue getLanguageFromString(String langue) {
-//		switch(langue) {
-//		case "Français":
-//			return Langue.FR;
-//			
-//		case "Japonais":
-//			return Langue.JP;
-//		
-//		default:
-//			return null;
-//		
-//		}
-//	}
+    // Méthode statique pour obtenir une instance de Langue à partir d'une chaîne
+    public static Langue fromString(String langue) {
+        for (Langue l : Langue.values()) {
+            if (l.string.equalsIgnoreCase(langue)) {
+                return l;
+            }
+        }
+        // Gérer le cas où la chaîne ne correspond à aucune Langue
+        throw new IllegalArgumentException("Langue non prise en charge : " + langue);
+    }
 }

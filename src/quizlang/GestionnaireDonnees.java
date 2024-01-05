@@ -62,12 +62,12 @@ public class GestionnaireDonnees {
 	        		String nom = parts[2];
 	        		String prenom = parts[3];
 	        		String langue = parts[4];
-	        		Langue langueProf;
-                    if (langue.equals("Français")) {
-                    	langueProf = Langue.FR;
-                    } else {
-                    	langueProf = Langue.JP;
-                    }
+	        		Langue langueProf = Langue.fromString(langue);
+//                    if (langue.equals("Français")) {
+//                    	langueProf = Langue.FR;
+//                    } else {
+//                    	langueProf = Langue.JP;
+//                    }
 	        		this.addTeacher(new Professeur(id, mdp, nom, prenom, langueProf), false);
 	        	}
 	        }

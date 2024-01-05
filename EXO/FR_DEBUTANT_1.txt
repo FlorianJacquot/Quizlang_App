@@ -1,2 +1,2 @@
-FR:DEBUTANT:1:2
+FR:DEBUTANT:0.5
 Mon hamster est en bonne santé, ses #poils# brillent et #ses# yeux pétillent.

@@ -12,15 +12,40 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * La classe InterfaceUtilisateur est utilisée pour l'interface graphique que verra l'utilisateur
+ */
 public class InterfaceUtilisateur extends JFrame {
-
+	
+	/**
+	 * La zone texte où l'utilisateur donnera son ID
+	 */
     private JTextField idField;
+    
+    /**
+     * La zone texte où l'utilisateur écrira son mot de passe
+     */
     private JPasswordField passwordField;
+    
+    /**
+     * Case à cocher pour que l'utilisateur puisse voir et vérifier son mot de passe
+     */
     private JCheckBox showPasswordCheckBox;  // Nouvelle case à cocher
+    
     private GestionnaireDonnees gestionnaire;
-
+    
+    private Professeur professeur;
+    private Apprenant apprenant;
+    
+    /**
+     * Constructeur de la classe InterfaceUtilisateur
+     * 
+     * @param gestionnaire le gestionnaire des données utilisateur
+     */
     public InterfaceUtilisateur(GestionnaireDonnees gestionnaire) {
         super("Page de Connexion à QuizLang");
         this.gestionnaire = gestionnaire;
@@ -94,6 +119,10 @@ public class InterfaceUtilisateur extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Méthode pour identifier l'utilisateur
+     * @param id
+     */
     private void authentifierUtilisateur(String id) {
         String motDePasse = new String(passwordField.getPassword());
 
@@ -119,6 +148,18 @@ public class InterfaceUtilisateur extends JFrame {
         }
     }
 
+    /**
+     * Méthode pour identifier l'utilisateur
+     * 
+     * @param id l'id fournit par l'utilisateur
+     * @param motDePasse le mot de passe fournit par l'utilisateur
+     * @return boolLearner une liste de deux booléens qui permettent de savoir si l'id est trouvé et si il a été trouvé dans le fichier des apprenants ou celui des professeurs.
+     *   On a quatre possibilités :
+     *   - boolLearner[0] = true -> l'id correspond à un id enregistré dans un des fichiers utilisateur
+     *   - boolLearner[0] = false -> l'id ne se trouve dans aucun fichier utilisateur
+     *   - boolLearner[1] = true -> l'id a été trouvé dans le ficher apprenant
+     *   - boolLearner[1] = false -> l'id n'a pas été trouvé dans le fichier apprenant
+     */
     private boolean[] authentifierUtilisateur(String id, String motDePasse) {
         boolean[] boolLearner = new boolean[2];
         boolLearner[1] = false;
@@ -132,6 +173,7 @@ public class InterfaceUtilisateur extends JFrame {
                     if (idLearner.equals(id) && mdpLearner.equals(motDePasse)) {
                         boolLearner[0] = true;
                         boolLearner[1] = true;
+                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], parts[4]);
                         return boolLearner;
                     }
                 }
@@ -151,18 +193,22 @@ public class InterfaceUtilisateur extends JFrame {
                     if (idTeacher.equals(id) && mdpTeacher.equals(motDePasse)) {
                         boolLearner[0] = true;
                         boolLearner[1] = false;
+                        professeur = new Professeur(idTeacher, mdpTeacher, parts[2], parts[3], Langue.fromString(parts[4]));
                         return boolLearner;
                     }
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Fichier apprenants introuvable");
+            System.out.println("Fichier professeurs introuvable");
             e.printStackTrace();
         }
         boolLearner[0] = false;
         return boolLearner;
     }
 
+    /**
+     * Méthode pour afficher ou masquer le mot de passe en fonction de si la case correspondante est cochée ou non
+     */
     private void afficherMasquerMotDePasse() {
         // Affiche ou masque le mot de passe en fonction de l'état de la case à cocher
         if (showPasswordCheckBox.isSelected()) {
@@ -172,6 +218,10 @@ public class InterfaceUtilisateur extends JFrame {
         }
     }
 
+    /**
+     * Méthode pour afficher le menu principal des apprenants si l'utilisateur connecté est un apprenant
+     * @param id
+     */
     private void afficherMenuPrincipalApprenant(String id) {
         JFrame menuPrincipalFrame = new JFrame("Menu Principal");
         menuPrincipalFrame.setSize(600, 400);
@@ -227,6 +277,10 @@ public class InterfaceUtilisateur extends JFrame {
         });
     }
 
+    /**
+     * Méthode pour afficher le menu principal des professeurs si l'utilisateur connecté est un professeur
+     * @param id
+     */
     private void afficherMenuPrincipalProfesseur(String id) {
         JFrame menuPrincipalFrame = new JFrame("Menu Principal");
         menuPrincipalFrame.setSize(600, 400);
@@ -238,7 +292,7 @@ public class InterfaceUtilisateur extends JFrame {
 
         JLabel titre = new JLabel("Bonjour, que voulez-vous faire ?");
         JButton boutonCreateExercice = new JButton("Créer un exercice");
-        JButton boutonManageExercice = new JButton("Gérer les exercices");
+        JButton boutonManageExercice = new JButton("Afficher les exercices");
         JButton boutonResults = new JButton("Voir les résultats des apprenants");
         JButton boutonQuit = new JButton("Quitter");
         
@@ -257,8 +311,25 @@ public class InterfaceUtilisateur extends JFrame {
         boutonCreateExercice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 1 sélectionnée");
+                try {
+                	professeur.createExercise();
+                } catch (IOException e1) {
+					e1.printStackTrace();
+				}
+                
             }
+        });
+        boutonManageExercice.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					String exoView = professeur.viewAvailableExercises();
+//					professeur.viewAvailableExercises();
+					JOptionPane.showMessageDialog(menuPrincipalFrame, exoView, "Les exercices disponibles :", JOptionPane.INFORMATION_MESSAGE);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+        	}
         });
         boutonResults.addActionListener(new ActionListener() {
             @Override
@@ -285,6 +356,10 @@ public class InterfaceUtilisateur extends JFrame {
         });
     }
     
+    /**
+     * Méthode pour supprimer le compte professeur si ce dernier clique sur le bouton correspondant
+     * @param id
+     */
     private void supprimerCompteProfesseur(String id) {
         gestionnaire.deleteTeacher(id);
 //        System.out.println("prof censé être supprimé");
@@ -292,6 +367,10 @@ public class InterfaceUtilisateur extends JFrame {
         new InterfaceUtilisateur(gestionnaire);
     }
     
+    /**
+     * Méthode pour supprimer le compte apprenant si ce dernier clique sur le bouton correspondant
+     * @param id
+     */
     private void supprimerCompteApprenant(String id) {
     	gestionnaire.deleteLearner(id);
 //        System.out.println("prof censé être supprimé");
@@ -299,6 +378,9 @@ public class InterfaceUtilisateur extends JFrame {
     	new InterfaceUtilisateur(gestionnaire);
     }
 
+    /**
+     * Méthode pour afficher le menu permettant de créer un compte apprenant
+     */
     public void menuCreateApprenant() {
 //		GestionnaireDonnees gestionnaire = new GestionnaireDonnees();
 
@@ -339,7 +421,7 @@ public class InterfaceUtilisateur extends JFrame {
         });
         
         comboLangue = new JComboBox<>();
-        comboLangue.addItem("Anglais");
+        comboLangue.addItem("Français");
         comboLangue.addItem("Japonais");
         comboLevel = new JComboBox<>();
         comboLevel.addItem("Débutant");
@@ -408,7 +490,9 @@ public class InterfaceUtilisateur extends JFrame {
         });
     }
     
-    
+    /**
+     * Méthode pour afficher le menu permettant de créer un compte professeur
+     */
     public void menuCreateProfesseur() {
 //    	GestionnaireDonnees gestionnaire = new GestionnaireDonnees();
     	
@@ -447,7 +531,7 @@ public class InterfaceUtilisateur extends JFrame {
     	});
     	
     	comboLangue = new JComboBox<>();
-    	comboLangue.addItem("Anglais");
+    	comboLangue.addItem("Français");
     	comboLangue.addItem("Japonais");
     	
     	btnRegister = new JButton("S'inscrire");
@@ -481,12 +565,12 @@ public class InterfaceUtilisateur extends JFrame {
 
                     String passwordString = new String(mdp);
                     
-                    Langue langueProf;
-                    if (langue.equals("Français")) {
-                    	langueProf = Langue.FR;
-                    } else {
-                    	langueProf = Langue.JP;
-                    }
+                    Langue langueProf = Langue.fromString(langue);
+//                    if (langue.equals("Français")) {
+//                    	langueProf = Langue.FR;
+//                    } else {
+//                    	langueProf = Langue.JP;
+//                    }
 
 					Professeur nouveauProfesseur = new Professeur(id, passwordString, nom, prenom, langueProf);
                     gestionnaire.addTeacher(nouveauProfesseur, true);
@@ -503,7 +587,17 @@ public class InterfaceUtilisateur extends JFrame {
     	});
     }
     
- // Méthode pour vérifier si les champs nécessaires à l'inscription sont remplis
+    /**
+     * Méthode pour vérifier si les champs nécessaires à l'inscription sont remplis
+     * 
+     * @param txtId
+     * @param passwordField
+     * @param txtNom
+     * @param txtPrenom
+     * @return un booléen
+     * - true si tous les champs ont été remplis par l'utilisateur
+     * - false s'il manque quelque chose
+     */
     private boolean champsSontRemplis(JTextField txtId, JPasswordField passwordField, JTextField txtNom, JTextField txtPrenom) {
         return !txtId.getText().isEmpty() && passwordField.getPassword().length > 0 &&
                 !txtNom.getText().isEmpty() && !txtPrenom.getText().isEmpty();

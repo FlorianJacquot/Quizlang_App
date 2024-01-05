@@ -1,2 +1,2 @@
-mango,1234,Wallet,Agathe,EN:3
-flo,mdp,Jac,Florian,EN:1
+mango,1234,Wallet,Agathe,FR:3
+flo,,Jac,Florian,JP:1

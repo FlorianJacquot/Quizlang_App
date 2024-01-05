@@ -1,2 +1,3 @@
-pap,turing,Paroubeck,Patrick,Anglais
+pap,turing,Paroubeck,Patrick,Français
 giroux,mdp,Giroux,Benjamin,Japonais
+ni,,Nishio,Sumikazu,Japonais
