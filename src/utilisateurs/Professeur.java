@@ -135,22 +135,8 @@ public class Professeur extends Utilisateur {
                 e.printStackTrace();
             }
         }
-        
-        
-        
-        
-        
-//        // si l'utilisateur a sélectionné un fichier
-//        if (res == JFileChooser.APPROVE_OPTION) {
-//        	ImportExercice importExercice = new ImportExercice();
-//        	listeExercices.add(importExercice.readFromFile(fileChooser.getSelectedFile())); // on crée l'exercice et on l'ajoute à la liste des exercices
-//        }
     }
 	
-	public void manageExercise() {
-        // Logique de gestion des exercices existants
-		//TODO
-    }
 	
 	public void viewStudentProgress() {
         // Logique pour consulter les progrès des élèves

@@ -35,6 +35,8 @@ public enum BaremeNiveau {
      * Le barème de notation pour les élèves de niveau AVANCE
      */
     AVANCE(1, -1, -1);
+	
+//	private String string;
 
     /**
      * Nombre de points attribués par réponse vraie de l'élève.
@@ -89,5 +91,16 @@ public enum BaremeNiveau {
      */
     public int getNr(){
         return nr;
+    }
+    
+    //  Méthode statique pour obtenir une instance de BaremeNiveau à partir d'une chaîne
+    public static BaremeNiveau fromString(String niveau) {
+        for (BaremeNiveau bn : BaremeNiveau.values()) {
+            if (bn.name().equalsIgnoreCase(niveau)) {
+                return bn;
+            }
+        }
+        // Gérer le cas où la chaîne ne correspond à aucune Langue
+        throw new IllegalArgumentException("Niveau non prise en charge : " + niveau);
     }
 }

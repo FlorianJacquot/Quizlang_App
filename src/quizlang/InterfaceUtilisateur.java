@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -166,14 +168,24 @@ public class InterfaceUtilisateur extends JFrame {
         try (Scanner fileScanner = new Scanner(new File("../DATA/Apprenants.txt"))) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length == 5) {
                     String idLearner = parts[0];
                     String mdpLearner = parts[1];
                     if (idLearner.equals(id) && mdpLearner.equals(motDePasse)) {
                         boolLearner[0] = true;
                         boolLearner[1] = true;
-                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], parts[4]);
+
+//                        String[] listLN = parts[4].split(":");
+//                        String langueString = listLN[0];
+//                        String niveauString = listLN[1];
+//                        Langue l = Langue.fromString(langueString);
+//                        BaremeNiveau b = BaremeNiveau.fromString(niveauString);
+//                        Map<Langue, BaremeNiveau> langueNiveauApprenant = new HashMap<Langue, BaremeNiveau>();
+//                        langueNiveauApprenant.put(l, b);
+                        
+                        Map<Langue, BaremeNiveau> langueNiveauApprenant = gestionnaire.NiveauLangueFromString(parts[4]);
+                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueNiveauApprenant);
                         return boolLearner;
                     }
                 }
@@ -186,7 +198,7 @@ public class InterfaceUtilisateur extends JFrame {
         try (Scanner fileScanner = new Scanner(new File("../DATA/Professeurs.txt"))) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                String[] parts = line.split(",");
+                String[] parts = line.split(";");
                 if (parts.length == 5) {
                 	String idTeacher = parts[0];
                     String mdpTeacher = parts[1];
@@ -272,7 +284,9 @@ public class InterfaceUtilisateur extends JFrame {
         boutonQuit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+//                System.exit(0);
+            	menuPrincipalFrame.dispose();
+                new InterfaceUtilisateur(gestionnaire);
             }
         });
     }
@@ -351,7 +365,9 @@ public class InterfaceUtilisateur extends JFrame {
         boutonQuit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+//                System.exit(0);
+                menuPrincipalFrame.dispose();
+                new InterfaceUtilisateur(gestionnaire);
             }
         });
     }
@@ -424,9 +440,9 @@ public class InterfaceUtilisateur extends JFrame {
         comboLangue.addItem("Français");
         comboLangue.addItem("Japonais");
         comboLevel = new JComboBox<>();
-        comboLevel.addItem("Débutant");
-        comboLevel.addItem("Intermédiaire");
-        comboLevel.addItem("Avancé");
+        comboLevel.addItem("DEBUTANT");
+        comboLevel.addItem("INTERMEDIAIRE");
+        comboLevel.addItem("AVANCE");
 
         btnRegister = new JButton("S'inscrire");
 
@@ -462,21 +478,25 @@ public class InterfaceUtilisateur extends JFrame {
 	            	String level = (String) comboLevel.getSelectedItem();
 	            	
 	            	String passwordString = new String(mdp);
-	            	if (langue.equals("Japonais")) {
-	            		langue = "JP";
-	            	} else {
-	            		langue = "EN";
-	            	}
+//	            	if (langue.equals("Japonais")) {
+//	            		langue = "JP";
+//	            	} else {
+//	            		langue = "EN";
+//	            	}
+//	            	
+//	            	if (level.equals("Débutant")) {
+//	            		level = "1";
+//	            	} else if (level.equals("Intermédiaire")) {
+//	            		level = "2";
+//	            	} else {
+//	            		level = "3";
+//	            	}
+	            	Map<Langue, BaremeNiveau> niveauLangueApprenant = new HashMap<Langue, BaremeNiveau>();
+	            	Langue langueApprenant = Langue.fromString(langue);
+	            	BaremeNiveau niveauApprenant = BaremeNiveau.fromString(level);
+	            	niveauLangueApprenant.put(langueApprenant, niveauApprenant); 
 	            	
-	            	if (level.equals("Débutant")) {
-	            		level = "1";
-	            	} else if (level.equals("Intermédiaire")) {
-	            		level = "2";
-	            	} else {
-	            		level = "3";
-	            	}
-	            	String niveauLangue = langue + ":" + level;
-	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, niveauLangue);
+	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, niveauLangueApprenant);
 	            	gestionnaire.addLearner(nouvelApprenant, true);
 	            	
 	            	JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");

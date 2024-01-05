@@ -1,8 +1,10 @@
 package quizlang;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -31,14 +33,24 @@ public class GestionnaireDonnees {
 		try (Scanner fileScanner = new Scanner(new File(filename))) {
 	        while (fileScanner.hasNextLine()) {
 	        	String line = fileScanner.nextLine();
-	        	String[] parts = line.split(",");
+	        	String[] parts = line.split(";");
 	        	if (parts.length == 5) {
 	        		String id = parts[0];	        		
 	        		String mdp = parts[1];
 	        		String nom = parts[2];
 	        		String prenom = parts[3];
 	        		String niveauLangue = parts[4];
-	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, niveauLangue), false);
+	        		
+//	        		String[] listLN = parts[4].split(":");
+//                    String langueString = listLN[0];
+//                    String niveauString = listLN[1];
+//                    Langue l = Langue.fromString(langueString);
+//                    BaremeNiveau b = BaremeNiveau.fromString(niveauString);
+//                    Map<Langue, BaremeNiveau> langueNiveauApprenant = new HashMap<Langue, BaremeNiveau>();
+//                    langueNiveauApprenant.put(l, b);
+	        		
+	        		Map<Langue, BaremeNiveau> niveauLangueApprenant = NiveauLangueFromString(niveauLangue);	
+	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, niveauLangueApprenant), false);
 	        	}
 	        }
 	        fileScanner.close();
@@ -55,7 +67,7 @@ public class GestionnaireDonnees {
 		try (Scanner fileScanner = new Scanner(new File(filename))) {
 	        while (fileScanner.hasNextLine()) {
 	        	String line = fileScanner.nextLine();
-	        	String[] parts = line.split(",");
+	        	String[] parts = line.split(";");
 	        	if (parts.length == 5) {
 	        		String id = parts[0];	        		
 	        		String mdp = parts[1];
@@ -98,7 +110,8 @@ public class GestionnaireDonnees {
     
     private void writeLearnerToFile(Apprenant apprenant, String filename) {
 		
-		String learnerData = apprenant.getId() + "," + apprenant.getMdp() + "," + apprenant.getName() + "," + apprenant.getSurname() + "," + apprenant.getLanguageLevel();
+//		String learnerData = apprenant.getId() + "," + apprenant.getMdp() + "," + apprenant.getName() + "," + apprenant.getSurname() + "," + apprenant.getLanguageLevel();
+		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getNiveauLangue();
 		
 		try (FileWriter myWriter = new FileWriter(filename, true)){ //true pour ajouter à la fin du fichier (append)			
 			myWriter.write(learnerData + System.lineSeparator());
@@ -110,7 +123,7 @@ public class GestionnaireDonnees {
     
     private void writeTeacherToFile(Professeur professeur, String filename) {
     	
-    	String learnerData = professeur.getId() + "," + professeur.getMdp() + "," + professeur.getName() + "," + professeur.getSurname() + "," + professeur.getLanguage();
+    	String learnerData = professeur.getId() + ";" + professeur.getMdp() + ";" + professeur.getName() + ";" + professeur.getSurname() + ";" + professeur.getLanguage();
     	
     	try (FileWriter myWriter = new FileWriter(filename, true)){ //true pour ajouter à la fin du fichier (append)			
     		myWriter.write(learnerData + System.lineSeparator());
@@ -166,7 +179,7 @@ public class GestionnaireDonnees {
 
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    String[] parts = line.split(",");
+                    String[] parts = line.split(";");
                     if (parts.length == 5) {
                         String id = parts[0];
                         if (!id.equals(professeur.getId())) {
@@ -200,7 +213,7 @@ public class GestionnaireDonnees {
     			
     			while (scanner.hasNextLine()) {
     				String line = scanner.nextLine();
-    				String[] parts = line.split(",");
+    				String[] parts = line.split(";");
     				if (parts.length == 5) {
     					String id = parts[0];
     					if (!id.equals(apprenant.getId())) {
@@ -223,5 +236,33 @@ public class GestionnaireDonnees {
     		System.out.println("Erreur lors de la manipulation du fichier: " + e.getMessage());
     	}
     }
+    
+    public Map<Langue, BaremeNiveau> NiveauLangueFromString(String input) {
+//      String input = "{FR=DEBUTANT}";
+
+      // Supprime les caractères { et } pour obtenir une chaîne JSON valide
+      String jsonString = input.replaceAll("[{}]", "");
+
+      // Divise la chaîne en paires clé-valeur
+      String[] keyValuePairs = jsonString.split(",");
+      
+      // Crée la HashMap résultante
+      Map<Langue, BaremeNiveau> resultMap = new HashMap<>();
+
+      for (String pair : keyValuePairs) {
+          // Divise chaque paire en clé et valeur
+          String[] entry = pair.split("=");
+
+          // Obtient la Langue à partir de la clé
+          Langue langue = Langue.fromString(entry[0]);
+
+          // Obtient le BaremeNiveau à partir de la valeur
+          BaremeNiveau niveau = BaremeNiveau.fromString(entry[1]);
+
+          // Ajoute la paire à la HashMap
+          resultMap.put(langue, niveau);
+      }
+      return resultMap;
+	}
 
 }

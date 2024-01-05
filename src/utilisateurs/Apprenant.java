@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import quizlang.BaremeNiveau;
+import quizlang.Exercice;
 //import quizlang.BaremeNiveau;
 import quizlang.Langue;
 
@@ -25,43 +27,99 @@ public class Apprenant extends Utilisateur {
 //	 */
 //	public static final String PROFESSOR_ID_FIELD_NAME = "professeur_id";
 //
-//	/**
-//	 * Map associant à chaque langue enseignée par ses professeurs le niveau de l'élève dans cette langue
-//	 */
-//	private Map<Langue, BaremeNiveau> niveaux = new HashMap<>();
+	/**
+	 * Map associant à chaque langue enseignée par ses professeurs le niveau de l'élève dans cette langue
+	 */
+	private Map<Langue, BaremeNiveau> niveaux = new HashMap<>();
 //
 //	/**
 //	 * Liste des professeurs auprès desquels l'élève est inscrit.
 //	 */
 //	private ArrayList<Professeur> listProfesseurs = new ArrayList<>();
-	private String niveauLangue;
+//	private String niveauLangue;
 	
 	/**
 	 * Constructeur permettant de créer un apprenant avec un login donné.
 	 * @param login login de l'élève
 	 */
-	public Apprenant(String id, String mdp, String nom, String prenom, String niveauLangue) {
+	public Apprenant(String id, String mdp, String nom, String prenom, Map<Langue, BaremeNiveau> niveauLangue) {
 		super(id, mdp, nom, prenom);
-		this.niveauLangue = niveauLangue;
+		this.niveaux = niveauLangue;
 	}
-//	
-//	/**
-//	 * Méthode permettant à un élève de s'inscrire auprès d'un professeur.
-//	 *
-//	 * @param prof professeur auprès duquel l'élève s'inscrit
-//	 */
-//	public void ajouterProf(Professeur prof) {
-//		this.listProfesseurs.add(prof);
-//		this.niveaux.put(prof.getLanguage(), BaremeNiveau.DEBUTANT);
+
+//	public void niveauApprenant() {
+//		super(id, )
 //	}
 	
-	public String getLanguageLevel() {
+	public String getLanguageLevelString(Langue langue) {
+		BaremeNiveau niveau = niveaux.get(langue);
+		String niveauString = niveau.name();
+		String langueString = langue.name();
+		String niveauLangue = langueString + ":" + niveauString;
 		return niveauLangue;
 	}
 	
-	public void selectExercise() {
-        // Logique de sélection d'exercice
-    }
+	/**
+	 * Méthode permettant de récupérer le niveau de l'élève dans une langue donnée.
+	 *
+	 * @param langue langue pour laquelle on souhaite récupérer le niveau de l'élève
+	 * @return niveau de l'élève dans la langue donnée
+	 */
+	public BaremeNiveau getBaremeNiveau(Langue langue){
+		return this.niveaux.get(langue);
+	}
+	public Map<Langue, BaremeNiveau> getNiveauLangue(){
+		return this.niveaux;
+	}
+	
+	
+	
+	/**
+	 * Méthode permettant de modifier le niveau de l'élève dans une langue donnée.
+	 *
+	 * @param niveau nouveau niveau de l'élève dans la langue donnée
+	 * @param langue langue pour laquelle on souhaite modifier le niveau de l'élève
+	 */
+	public void setNiveau(BaremeNiveau niveau, Langue langue) {
+		this.niveaux.put(langue, niveau);
+	}
+	
+//	/**
+//	 * Récupère la liste des exercices accessibles pour l'utilisateur (élève) courant en fonction de ses niveaux en langues et de la liste des exercices disponibles.
+//	 * Un exercice est considéré comme accessible s'il a la même langue et le même niveau que l'utilisateur, ou s'il a la même langue et un niveau inférieur.
+//	 *
+//	 * @param listNiveauxUtilisateur la liste de tous les niveaux de tous les élèves
+//	 * @param listExercices la liste de tous les exercices disponibles dans l'application
+//	 * @return la liste des exercices accessibles pour l'utilisateur (élève) courant
+//	 */
+//	public ArrayList<Exercice> getExercicesAccessibles(ArrayList<NiveauxA> listNiveauxUtilisateur, List<Exercice> listExercices) {
+//		ArrayList<Exercice> exercicesAccessibles = new ArrayList<>();
+//		// Pour chaque enregistrement de niveau de l'utilisateur actif
+//		for (NiveauxEleves niveauEleve : listNiveauxUtilisateur) {
+//			// Si l'enregistrement concerne l'utilisateur actif
+//			if (niveauEleve.getPseudoEleve().equals(this.getPseudo())) {
+//				// Pour chaque exercice de la liste
+//				for (Exercice exercice : listExercices) {
+//					// Si l'exercice a la même langue et le même niveau que l'enregistrement de l'utilisateur actif, on l'ajoute à la liste des exercices accessibles
+//					if (exercice.getLangue().equals(niveauEleve.getLangue()) && exercice.getNiveau().equals(niveauEleve.getNiveau())) {
+//						exercicesAccessibles.add(exercice);
+//					}
+//					// Si l'exercice a la même langue et un niveau inférieur à celui de l'enregistrement de l'utilisateur actif, on l'ajoute également à la liste des exercices accessibles
+//					else if (exercice.getLangue().equals(niveauEleve.getLangue()) && exercice.getNiveau().ordinal() < niveauEleve.getNiveau().ordinal()) {
+//						exercicesAccessibles.add(exercice);
+//					}
+//				}
+//			}
+//		}
+//		if(exercicesAccessibles.isEmpty()){
+//			System.out.println("Il n'y a encore aucun exercice accessible pour vos langues et votre niveau.");
+//		}
+//		return exercicesAccessibles;
+//	}
+//	
+//	public void selectExercise() {
+//        ArrayList<Exercice> exerciceAccessibles = 
+//    }
 
     public void submitExercise() {
         // Logique de soumission d'exercice

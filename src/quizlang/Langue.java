@@ -24,7 +24,7 @@ public enum Langue {
     // Méthode statique pour obtenir une instance de Langue à partir d'une chaîne
     public static Langue fromString(String langue) {
         for (Langue l : Langue.values()) {
-            if (l.string.equalsIgnoreCase(langue)) {
+            if (l.string.equalsIgnoreCase(langue) || l.name().equalsIgnoreCase(langue)) {
                 return l;
             }
         }
