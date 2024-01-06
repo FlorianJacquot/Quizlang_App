@@ -17,7 +17,7 @@ public enum Langue {
 		this.string = string;
 	}
 	
-	public String getLangue() {
+	public String getLangueString() {
 		return string;
 	}
 	

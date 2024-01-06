@@ -22,8 +22,10 @@
 //
 package quizlang;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import utilisateurs.Apprenant;
 
@@ -106,6 +108,22 @@ public class Exercice {
 
         return result.toString();
     }
+    public String previewTextApprenant() {
+    	StringBuilder result = new StringBuilder();
+    	// Affiche seulement les 3 premières phrases du texte
+    	for (int i = 0; i < 3 && i < listPhrases.size(); i++) {
+    		result.append(listPhrases.get(i).getPhraseAvecTrous()).append("\n");
+    	}
+    	
+    	// Ajoute un message indiquant qu'il y a plus de phrases dans le texte
+    	if (listPhrases.size() > 3) {
+    		result.append("...\n");
+    	} else {
+    		result.append("\n"); // retour à la ligne pour que ça fasse plus clean
+    	}
+    	
+    	return result.toString();
+    }
 //    public void previewText() {
 //        // Affiche seulement les 3 premières phrases du texte
 //        for (int i = 0; i < 3 && i < listPhrases.size(); i++) {
@@ -127,25 +145,81 @@ public class Exercice {
      * - la liste des mots à placer arrangés de manière aléatoire
      * - le texte avec des "___" à la place des mots à placer
      */
+//    public void afficheExercice() {
+//
+//        //on récupère tous les mots à placer de chaque phrase de l'exercice
+//        ArrayList<String> allMotsAPlacer = new ArrayList<>();
+//
+//        for (PhraseATrous phrase : listPhrases) {
+//            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+//        }
+//
+//        // on randomise la liste des des mots à placer
+//        Collections.shuffle(allMotsAPlacer);
+//
+//        // on affiche la liste des mots à placer
+//        System.out.println("Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n"); //on affiche la liste de tous les mots à placer
+//
+//        // on affiche la phrase avec les trousS.
+//        for (PhraseATrous phrase : listPhrases) {
+//            System.out.println(phrase.getPhraseAvecTrous());
+//        }
+//    }
     public void afficheExercice() {
-
-        //on récupère tous les mots à placer de chaque phrase de l'exercice
-        ArrayList<String> allMotsAPlacer = new ArrayList<>();
-
-        for (PhraseATrous phrase : listPhrases) {
-            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+    	
+    	//on récupère tous les mots à placer de chaque phrase de l'exercice
+    	ArrayList<String> allMotsAPlacer = new ArrayList<>();
+    	
+    	for (PhraseATrous phrase : listPhrases) {
+    		allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+    	}
+    	
+    	// on randomise la liste des des mots à placer
+    	Collections.shuffle(allMotsAPlacer);
+    	
+    	// on affiche la liste des mots à placer
+    	System.out.println("Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n"); //on affiche la liste de tous les mots à placer
+    	
+    	// on affiche la phrase avec les trousS.
+    	for (PhraseATrous phrase : listPhrases) {
+    		System.out.println(phrase.getPhraseAvecTrous());
+    	}
+    }
+    public String textExercice() {
+    	StringBuilder result = new StringBuilder();
+    	//on récupère tous les mots à placer de chaque phrase de l'exercice
+    	ArrayList<String> allMotsAPlacer = new ArrayList<>();
+    	
+    	for (PhraseATrous phrase : listPhrases) {
+    		allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+    	}
+    	
+    	// on randomise la liste des des mots à placer
+    	Collections.shuffle(allMotsAPlacer);
+    	
+    	// on affiche la liste des mots à placer
+    	result.append("\nLes mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n"); //on affiche la liste de tous les mots à placer
+    	
+    	// on affiche la phrase avec les trousS.
+    	for (PhraseATrous phrase : listPhrases) {
+    		result.append(phrase.getPhraseAvecTrous()+"\n");
+    	}
+    	return result.toString();
+    }
+    public String viewAvailableExercises() throws IOException {
+    	ImportExercice ie = new ImportExercice();
+    	StringBuilder result = new StringBuilder();
+    	
+        System.out.println("Exercices disponibles :");
+        List<Exercice> listeExercices = ie.importDossier("../EXO");
+        for (Exercice exercice : listeExercices) {
+        	// n'affiche que les exercices associés à la langue du professeur
+        	if (exercice.getLangue() == langue) {
+        		String exoView = exercice.previewText();
+        		result.append("- ").append(exoView).append("\n");
+        	}
         }
-
-        // on randomise la liste des des mots à placer
-        Collections.shuffle(allMotsAPlacer);
-
-        // on affiche la liste des mots à placer
-        System.out.println("Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n"); //on affiche la liste de tous les mots à placer
-
-        // on affiche la phrase avec les trousS.
-        for (PhraseATrous phrase : listPhrases) {
-            System.out.println(phrase.getPhraseAvecTrous());
-        }
+        return result.toString();
     }
 
     /**
@@ -205,7 +279,6 @@ public class Exercice {
 
     /**
      *  Cette méthode permet de construire la réponse d'un élève à un exercice.
-     *  Elle est définie dans les classes filles de `Exercice`.
      *  @param apprenant l'apprenant dont on souhaite construire la réponse
      *  @return La réponse de l'élève à l'exercice
      */

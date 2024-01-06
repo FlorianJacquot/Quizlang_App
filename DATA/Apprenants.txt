@@ -1,3 +1,4 @@
-mango;1234;Wallet;Agathe;{FR=AVANCE}
-flo;;Jac;Florian;{JP=DEBUTANT}
-J;J;JO;JO;{FR=DEBUTANT}
+mango;1234;Wallet;Agathe;FR;AVANCE
+flo;;Jac;Florian;JP;DEBUTANT
+J;J;JO;JO;FR;DEBUTANT
+juju;j;gui;ju;JP;DEBUTANT

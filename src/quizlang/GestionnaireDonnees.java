@@ -34,12 +34,13 @@ public class GestionnaireDonnees {
 	        while (fileScanner.hasNextLine()) {
 	        	String line = fileScanner.nextLine();
 	        	String[] parts = line.split(";");
-	        	if (parts.length == 5) {
+	        	if (parts.length == 6) {
 	        		String id = parts[0];	        		
 	        		String mdp = parts[1];
 	        		String nom = parts[2];
 	        		String prenom = parts[3];
-	        		String niveauLangue = parts[4];
+	        		String langue = parts[4];
+	        		String niveau = parts[5];
 	        		
 //	        		String[] listLN = parts[4].split(":");
 //                    String langueString = listLN[0];
@@ -49,8 +50,12 @@ public class GestionnaireDonnees {
 //                    Map<Langue, BaremeNiveau> langueNiveauApprenant = new HashMap<Langue, BaremeNiveau>();
 //                    langueNiveauApprenant.put(l, b);
 	        		
-	        		Map<Langue, BaremeNiveau> niveauLangueApprenant = NiveauLangueFromString(niveauLangue);	
-	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, niveauLangueApprenant), false);
+//	        		Map<Langue, BaremeNiveau> niveauLangueApprenant = NiveauLangueFromString(niveauLangue);	
+//	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, niveauLangueApprenant), false);
+	        		
+	        		Langue langueA = Langue.fromString(langue);
+	            	BaremeNiveau niveauA = BaremeNiveau.fromString(niveau);
+	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, langueA, niveauA), false);
 	        	}
 	        }
 	        fileScanner.close();
@@ -111,7 +116,8 @@ public class GestionnaireDonnees {
     private void writeLearnerToFile(Apprenant apprenant, String filename) {
 		
 //		String learnerData = apprenant.getId() + "," + apprenant.getMdp() + "," + apprenant.getName() + "," + apprenant.getSurname() + "," + apprenant.getLanguageLevel();
-		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getNiveauLangue();
+//		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getNiveauLangue();
+		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getLangue().name() + ";" + apprenant.getBaremeNiveau().name();
 		
 		try (FileWriter myWriter = new FileWriter(filename, true)){ //true pour ajouter à la fin du fichier (append)			
 			myWriter.write(learnerData + System.lineSeparator());
@@ -123,7 +129,7 @@ public class GestionnaireDonnees {
     
     private void writeTeacherToFile(Professeur professeur, String filename) {
     	
-    	String learnerData = professeur.getId() + ";" + professeur.getMdp() + ";" + professeur.getName() + ";" + professeur.getSurname() + ";" + professeur.getLanguage();
+    	String learnerData = professeur.getId() + ";" + professeur.getMdp() + ";" + professeur.getName() + ";" + professeur.getSurname() + ";" + professeur.getLangueString();
     	
     	try (FileWriter myWriter = new FileWriter(filename, true)){ //true pour ajouter à la fin du fichier (append)			
     		myWriter.write(learnerData + System.lineSeparator());

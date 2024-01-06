@@ -106,6 +106,7 @@ public class ReponseApprenant {
       this.corrige();
       // On calcule la note de l'élève pour l'exercice
       this.calculNote();
+      myScanner.close();
   }
 
   /**

@@ -42,8 +42,12 @@ public class Professeur extends Utilisateur {
 		this.langue = langue;
 	}
 	
-	public String getLanguage() {
-		return langue.getLangue();
+	public Langue getLangue() {
+		return langue;
+	}
+
+	public String getLangueString() {
+		return langue.getLangueString();
 	}
 	
 //    /**

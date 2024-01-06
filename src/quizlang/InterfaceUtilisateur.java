@@ -42,6 +42,13 @@ public class InterfaceUtilisateur extends JFrame {
     
     private Professeur professeur;
     private Apprenant apprenant;
+    private ParseurPhraseATrous parseur;
+    
+//    /**
+//     * Représente la liste des exercices disponibles dans l'application.
+//     * Cette liste est utilisée pour afficher les exercices.
+//     */
+//    private static List<Exercice> listExercices = new ArrayList<>();
     
     /**
      * Constructeur de la classe InterfaceUtilisateur
@@ -169,7 +176,7 @@ public class InterfaceUtilisateur extends JFrame {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(";");
-                if (parts.length == 5) {
+                if (parts.length == 6) {
                     String idLearner = parts[0];
                     String mdpLearner = parts[1];
                     if (idLearner.equals(id) && mdpLearner.equals(motDePasse)) {
@@ -184,8 +191,11 @@ public class InterfaceUtilisateur extends JFrame {
 //                        Map<Langue, BaremeNiveau> langueNiveauApprenant = new HashMap<Langue, BaremeNiveau>();
 //                        langueNiveauApprenant.put(l, b);
                         
-                        Map<Langue, BaremeNiveau> langueNiveauApprenant = gestionnaire.NiveauLangueFromString(parts[4]);
-                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueNiveauApprenant);
+//                        Map<Langue, BaremeNiveau> langueNiveauApprenant = gestionnaire.NiveauLangueFromString(parts[4]);
+//                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueNiveauApprenant);
+                        Langue langueA = Langue.fromString(parts[4]);
+                        BaremeNiveau niveauA = BaremeNiveau.fromString(parts[5]);
+                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueA, niveauA);
                         return boolLearner;
                     }
                 }
@@ -261,8 +271,104 @@ public class InterfaceUtilisateur extends JFrame {
         boutonExercice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 1 sélectionnée");
+//                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 1 sélectionnée");
+            	try {
+            		afficherExercices();
+					
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+                
             }
+
+			private void afficherExercices() throws IOException {
+//				int nbExerciceDisponibles = apprenant.numberAvailableExercises();
+				ArrayList<Exercice> exercicesAccessibles = apprenant.getExercicesAccessibles();
+				
+				JFrame menuExerciceFrame = new JFrame("Veuillez choisir un exercice :");
+				menuExerciceFrame.setSize(600, 400);
+//		        menuExerciceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				menuExerciceFrame.setLocationRelativeTo(null);
+		        
+		        JPanel menuExercicePanel = new JPanel();
+		        menuExercicePanel.setLayout(new GridLayout(1, exercicesAccessibles.size()));
+		        
+		        ArrayList<JButton> buttonsExo = new ArrayList<JButton>();
+
+		        for (Exercice exoA : exercicesAccessibles) {
+		        	
+		        	JButton boutonExercice = new JButton(exoA.previewTextApprenant());
+		        	menuExercicePanel.add(boutonExercice);
+		        	buttonsExo.add(boutonExercice);
+		        }
+		        JButton boutonQuit = new JButton("Quitter");
+		        menuPrincipalPanel.add(boutonQuit);
+
+		        menuExerciceFrame.add(menuExercicePanel);
+		        menuExerciceFrame.setVisible(true);
+		        int i = 0;
+		        for (JButton button: buttonsExo) {
+			        button.addActionListener(new ActionListener() {
+			            @Override
+			            public void actionPerformed(ActionEvent e) {
+			            	Exercice exerciceChoisi = exercicesAccessibles.get(buttonsExo.indexOf(button));
+			            	String textExo = exerciceChoisi.textExercice();
+			            	// construction de la réponse de l'exercice
+                            ReponseApprenant reponseApprenant= exerciceChoisi.construireReponse((Apprenant) apprenant);
+                            
+                         // correction des réponses de l'élève
+                            System.out.println("\nCorrection :\n");
+                            
+                            reponseApprenant.affichePhrasesRempliesAvecCouleurs(parseur.getReversedPattern()); // on reconstitue l'exercice avec les réponses de l'élève en mettant des couleurs selon si sa réponse est bonne  ou non
+
+                            if (reponseApprenant.valide()) { // l'élève a réussi l'exercice et gagne un point dans son score de la langue
+                                System.out.println("Félicitations, vous avez réussi l'exercice.");
+                                System.out.println("Vous deviez obtenir " + reponseApprenant.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponseApprenant.getNoteDonnee() + "!\n");
+                            } else { // l'élève n'a pas réussi l'exercice
+                                System.out.println("Dommage, vous n'avez pas réussi l'exercice.");
+                                System.out.println("Vous deviez obtenir " + reponseApprenant.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponseApprenant.getNoteDonnee() + "...\n");
+                            }
+
+//                            // on demande à l'utilisateur s'il veut voir les réponses correctes
+//                            System.out.println("Voulez-vous voir les réponses correctes ?");
+//                            System.out.println("" +
+//                                    "- 1 : Oui\n" +
+//                                    "- 2 : Non");
+//                            System.out.print("Votre réponse : ");
+//                            inputUser = scannerInputUser.nextLine(); // on récupère son choix
+//                            if(inputUser.equals("1")) {
+//                                exerciceChoisi.afficherCorrection();
+//                            }
+//
+//                            // on update le score de l'élève et au besoin on update le niveau de l'élève
+//                            Boolean eleveValide = reponseApprenant.valide();
+//                            for (NiveauxEleves niv : listNiveauxUtilisateur) {
+//                                if (niv.getPseudoEleve().equals(utilisateurActif.getPseudo()) && niv.getLangue() == exerciceChoisi.getLangue()) {
+//                                    niv.updateScore(eleveValide, niveauElevesDao);
+//                                    niv.updateNiveau(exerciceChoisi.getLangue(), niveauElevesDao);
+//                                    break;
+//                                }
+//                            }
+			            	
+			            }
+			        });
+			        i++;
+		        }
+		        
+		        boutonQuit.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+//		                System.exit(0);
+		            	menuPrincipalFrame.dispose();
+		                new InterfaceUtilisateur(gestionnaire);
+		            }
+		        });
+		        
+//				String exoView = apprenant.viewAvailableExercises();
+//				JOptionPane.showMessageDialog(menuPrincipalFrame, exoView, "Voici une preview des exercices disponibles pour votre niveau:", JOptionPane.INFORMATION_MESSAGE);
+				
+			}
         });
         boutonResults.addActionListener(new ActionListener() {
             @Override
@@ -491,12 +597,15 @@ public class InterfaceUtilisateur extends JFrame {
 //	            	} else {
 //	            		level = "3";
 //	            	}
-	            	Map<Langue, BaremeNiveau> niveauLangueApprenant = new HashMap<Langue, BaremeNiveau>();
-	            	Langue langueApprenant = Langue.fromString(langue);
-	            	BaremeNiveau niveauApprenant = BaremeNiveau.fromString(level);
-	            	niveauLangueApprenant.put(langueApprenant, niveauApprenant); 
-	            	
-	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, niveauLangueApprenant);
+//	            	Map<Langue, BaremeNiveau> niveauLangueApprenant = new HashMap<Langue, BaremeNiveau>();
+//	            	Langue langueApprenant = Langue.fromString(langue);
+//	            	BaremeNiveau niveauApprenant = BaremeNiveau.fromString(level);
+//	            	niveauLangueApprenant.put(langueApprenant, niveauApprenant); 
+//	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, niveauLangueApprenant);
+
+	            	Langue langueA = Langue.fromString(langue);
+	            	BaremeNiveau niveauA = BaremeNiveau.fromString(level);
+	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, langueA, niveauA);
 	            	gestionnaire.addLearner(nouvelApprenant, true);
 	            	
 	            	JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");

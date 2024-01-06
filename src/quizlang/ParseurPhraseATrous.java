@@ -25,6 +25,16 @@ public class ParseurPhraseATrous {
      * Objet {@link Pattern} utilisé pour parser l'input dans le sens inverse.
      */
     protected Pattern reversedPattern = null;
+    
+    /**
+     * Méthode qui retourne l'objet {@link Pattern} utilisé pour parser l'input dans le sens inverse.
+     * C'est utile pour reconstituer l'exercice avec les réponses de l'élève.
+     *
+     * @return l'objet {@link Pattern} utilisé pour parser l'input dans le sens inverse
+     */
+    public Pattern getReversedPattern(){
+        return this.reversedPattern;
+    }
 
     /**
      * Constructeur de la classe ParseurPhraseATrous.
