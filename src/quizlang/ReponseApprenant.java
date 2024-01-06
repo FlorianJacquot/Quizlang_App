@@ -1,6 +1,11 @@
 package quizlang;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 //import fake_quizlet.exercice.Exercice;
 //import fake_quizlet.notation.ValeurReponse;
@@ -9,9 +14,20 @@ import java.awt.Color;
 //import fake_quizlet.utilisateurs.Eleve;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import utilisateurs.Apprenant;
 
@@ -70,43 +86,195 @@ public class ReponseApprenant {
    * @param exercice l'exercice que l'élève a fait
    * @param eleve l'élève qui a répondu à l'exercice
    */
-  public ReponseApprenant(Exercice exercice, Apprenant apprenant){
+  public ReponseApprenant(Exercice exercice, Apprenant apprenant) {
       this.exercice = exercice;
       this.apprenant = apprenant;
-      
+
       // Définition du seuil de passation pour l'exercice
       this.setSeuilPassation();
 
+      // Initialisation des réponses fournies
+      this.reponsesFournies = new ArrayList<>();
+
+      // Création de la fenêtre Swing
+      JFrame frame = new JFrame("Réponses de l'apprenant");
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+      frame.setLocationRelativeTo(null);
+
+      // Création d'un panneau pour afficher l'exercice et les réponses
+      JPanel panel = new JPanel();
+      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
       // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-      exercice.afficheExercice();
-      
-      // Création d'un scanner pour récupérer les réponses de l'élève
-      Scanner myScanner = new Scanner(System.in);
-      
-      // Liste tampon qui sera vidée après chaque phrase
-      ArrayList<String> listeTampon = new ArrayList<>();
-      
-      // Compteur pour numéroter les mots manquants
+      ArrayList<String> allMotsAPlacer = new ArrayList<>();
+      for (PhraseATrous phrase : exercice.getListPhrases()) {
+          allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+      }
+      Collections.shuffle(allMotsAPlacer);
+      String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+      JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+      panel.add(motsAPlacerLabel);
+
+      // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses
       int i = 1;
-      for (PhraseATrous phrase : exercice.getListPhrases()) { //pour chaque phrase de l'exercice
-          listeTampon.clear(); // on vide la liste tampon
-          System.out.println("\nPhrase " + i + " : " + phrase.getPhraseAvecTrous()); // on réimprime la phrase avec les trous pour la lisibilité
+      for (PhraseATrous phrase : exercice.getListPhrases()) {
+          JPanel phrasePanel = new JPanel();
+          phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+
+          JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
+          phrasePanel.add(phraseLabel);
+
           int j = 1;
-          for (String mot : phrase.getMotsAPlacer()) { //pour chaque mot à placer dans la phrase
-              System.out.println("Quel est le mot manquant " + j + "?"); //on demande le mot manquant à la place J dans la phrase
-              String motDonne = myScanner.nextLine();
-              listeTampon.add(motDonne); //on ajoute notre mot à la liste tampon
+          for (String mot : phrase.getMotsAPlacer()) {
+              JPanel motPanel = new JPanel();
+              motPanel.setLayout(new FlowLayout());
+              JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
+              JTextField motTextField = new JTextField(15);
+              motPanel.add(motLabel);
+              motPanel.add(motTextField);
+              phrasePanel.add(motPanel);
               j++;
           }
           i++;
-          this.reponsesFournies.add(new ArrayList<String>(listeTampon));
+          panel.add(phrasePanel);
       }
-      
-      // On corrige les réponses de l'élève
-      this.corrige();
-      // On calcule la note de l'élève pour l'exercice
-      this.calculNote();
-      myScanner.close();
+
+      // Création d'un bouton pour soumettre les réponses
+      JButton submitButton = new JButton("Soumettre les réponses");
+      submitButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Collecter les réponses des champs de texte
+              collecterReponses(panel);
+
+              // On corrige les réponses de l'élève
+              corrige();
+              // On calcule la note de l'élève pour l'exercice
+              calculNote();
+              
+              String message;
+              if (valide()) {
+                  message = "Félicitations, vous avez réussi l'exercice.\n"
+                          + "Vous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "!";
+              } else {
+                  message = "Dommage, vous n'avez pas réussi l'exercice.\n"
+                          + "Vous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "...";
+              }
+
+              // Afficher le message dans une boîte de dialogue
+              JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
+
+              // Afficher la correction
+              frame.dispose();
+              afficheCorrectionSwing();
+          }
+      });
+      panel.add(submitButton);
+
+      // Ajouter le panneau à la fenêtre
+      frame.getContentPane().add(panel);
+
+      // Rendre la fenêtre visible
+      frame.setVisible(true);
+  }
+
+  private void collecterReponses(JPanel panel) {
+//      int phraseIndex = 0;
+      ArrayList<String> listeTampon = new ArrayList<>();
+      for (Component component : panel.getComponents()) {
+    	  listeTampon.clear(); // on vide la liste tampon
+          if (component instanceof JPanel) {
+              JPanel phrasePanel = (JPanel) component;
+//              int motIndex = 0;
+              for (Component innerComponent : phrasePanel.getComponents()) {
+                  if (innerComponent instanceof JPanel) {
+                      JPanel motPanel = (JPanel) innerComponent;
+                      for (Component subComponent : motPanel.getComponents()) {
+                          if (subComponent instanceof JTextField) {
+                              JTextField motTextField = (JTextField) subComponent;
+                              String reponse = motTextField.getText();
+                              listeTampon.add(reponse);
+//                              System.out.println(reponse);
+//                              System.out.println(phraseIndex);
+//                              System.out.println(reponsesFournies);
+                              
+//                              motIndex++;
+                          }
+                      }
+                  }
+              }
+              this.reponsesFournies.add(new ArrayList<String>(listeTampon));
+//              phraseIndex++;
+          }
+      }
+  }
+  
+  public void afficheCorrectionSwing() {
+      // Création de la fenêtre Swing
+      JFrame frame = new JFrame("Correction de l'apprenant");
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+      frame.setLocationRelativeTo(null);
+
+      // Création d'un panneau pour afficher la correction
+      JPanel panel = new JPanel();
+      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+      // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
+      ArrayList<String> allMotsAPlacer = new ArrayList<>();
+      for (PhraseATrous phrase : exercice.getListPhrases()) {
+          allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+      }
+      Collections.shuffle(allMotsAPlacer);
+      String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+      JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+      panel.add(motsAPlacerLabel);
+
+      // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
+      int i = 1;
+      for (PhraseATrous phrase : exercice.getListPhrases()) {
+          JPanel phrasePanel = new JPanel();
+          phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+
+          JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
+          phrasePanel.add(phraseLabel);
+
+          int j = 1;
+          for (String mot : phrase.getMotsAPlacer()) {
+              JPanel motPanel = new JPanel();
+              motPanel.setLayout(new FlowLayout());
+              JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
+              JTextField motTextField = new JTextField(15);
+              motTextField.setEditable(false); // Le champ de texte est en lecture seule
+              motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
+              ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
+
+              switch (correction) {
+                  case VRAI:
+                      motTextField.setBackground(Color.GREEN);
+                      break;
+                  case FAUX:
+                      motTextField.setBackground(Color.RED);
+                      break;
+              }
+
+              motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
+              motPanel.add(motLabel);
+              motPanel.add(motTextField);
+              phrasePanel.add(motPanel);
+              j++;
+          }
+          i++;
+
+          panel.add(phrasePanel);
+      }
+
+      // Ajouter le panneau à la fenêtre
+      frame.getContentPane().add(panel);
+
+      // Rendre la fenêtre visible
+      frame.setVisible(true);
   }
 
   /**
@@ -194,65 +362,65 @@ public class ReponseApprenant {
       return this.seuilPassation;
   }
 
-  /**
-   * Affiche les phrases de l'exercice avec les trous remplis par les réponses de l'élève.
-   * Si la réponse de l'élève est correcte, le mot est affiché en vert.
-   * Si la réponse est incorrecte, le mot est affiché en rouge.
-   * Si la réponse n'a pas été fournie, "___" est affiché en jaune.
-   *
-   * @param pattern le motif de l'expression régulière utilisé pour détecter les trous dans
-   *                les phrases
-   */
-  public void affichePhrasesRempliesAvecCouleurs(Pattern pattern) {
-      // Crée une liste qui contient l'attribut phraseAvecTrous de chaque objet Phrase de l'exo
-      ArrayList<String> allPhraseAvecTrous = new ArrayList<>();
-      for (PhraseATrous phrase : ((Exercice) exercice).getListPhrases()) {
-          allPhraseAvecTrous.add(phrase.getPhraseAvecTrous());
-      }
-
-      // Crée un StringBuffer qui contiendra les phrases dans lesquelles on a rempli les trous par les réponses de l'élève
-      StringBuffer phrasesRemplies = new StringBuffer();
-      for (int i = 0; i < allPhraseAvecTrous.size(); i++) {
-          // Récupère la phrase et les réponses de l'élève pour cette phrase
-          String phrase = allPhraseAvecTrous.get(i);
-          ArrayList<String> response = reponsesFournies.get(i);
-          Matcher matcher = pattern.matcher(phrase);
-
-          int j = 0;
-          while (matcher.find()) { // tant qu'on trouve des trous dans la phrase
-              ValeurReponse correction = this.getReponsesCorrection().get(i).get(j);
-              String replacement = null;
-              switch (correction) { // en fonction de la correction, détermine la couleur de la réponse de l'élève
-                  case VRAI:
-//                      replacement = Ansi.ansi().bg(Ansi.Color.GREEN).a(response.get(j)).reset().toString();
-                      replacement = colorize(response.get(j), Color.GREEN);
-;
-                      break;
-                  case FAUX:
-//                      replacement = Ansi.ansi().bg(Ansi.Color.RED).a(response.get(j)).reset().toString();
-                      replacement = colorize(response.get(j), Color.RED);
-
-                      break;
-                  case NR:
-                      replacement = colorize("___", Color.YELLOW);
-
-                      break;
-                  default:
-                      replacement = response.get(j);
-                      break;
-              }
-              // Remplace le trou par la réponse de l'élève dans le StringBuffer
-              matcher.appendReplacement(phrasesRemplies, replacement);
-              j++;
-          }
-          // Ajoute la fin de la phrase au StringBuffer
-          matcher.appendTail(phrasesRemplies);
-          phrasesRemplies.append("\n");
-      }
-
-      // Affiche le StringBuffer qui contient les phrases remplies
-      System.out.println(phrasesRemplies);
-  }
+//  /**
+//   * Affiche les phrases de l'exercice avec les trous remplis par les réponses de l'élève.
+//   * Si la réponse de l'élève est correcte, le mot est affiché en vert.
+//   * Si la réponse est incorrecte, le mot est affiché en rouge.
+//   * Si la réponse n'a pas été fournie, "___" est affiché en jaune.
+//   *
+//   * @param pattern le motif de l'expression régulière utilisé pour détecter les trous dans
+//   *                les phrases
+//   */
+//  public void affichePhrasesRempliesAvecCouleurs(Pattern pattern) {
+//      // Crée une liste qui contient l'attribut phraseAvecTrous de chaque objet Phrase de l'exo
+//      ArrayList<String> allPhraseAvecTrous = new ArrayList<>();
+//      for (PhraseATrous phrase : ((Exercice) exercice).getListPhrases()) {
+//          allPhraseAvecTrous.add(phrase.getPhraseAvecTrous());
+//      }
+//
+//      // Crée un StringBuffer qui contiendra les phrases dans lesquelles on a rempli les trous par les réponses de l'élève
+//      StringBuffer phrasesRemplies = new StringBuffer();
+//      for (int i = 0; i < allPhraseAvecTrous.size(); i++) {
+//          // Récupère la phrase et les réponses de l'élève pour cette phrase
+//          String phrase = allPhraseAvecTrous.get(i);
+//          ArrayList<String> response = reponsesFournies.get(i);
+//          Matcher matcher = pattern.matcher(phrase);
+//
+//          int j = 0;
+//          while (matcher.find()) { // tant qu'on trouve des trous dans la phrase
+//              ValeurReponse correction = this.getReponsesCorrection().get(i).get(j);
+//              String replacement = null;
+//              switch (correction) { // en fonction de la correction, détermine la couleur de la réponse de l'élève
+//                  case VRAI:
+////                      replacement = Ansi.ansi().bg(Ansi.Color.GREEN).a(response.get(j)).reset().toString();
+//                      replacement = colorize(response.get(j), Color.GREEN);
+//;
+//                      break;
+//                  case FAUX:
+////                      replacement = Ansi.ansi().bg(Ansi.Color.RED).a(response.get(j)).reset().toString();
+//                      replacement = colorize(response.get(j), Color.RED);
+//
+//                      break;
+//                  case NR:
+//                      replacement = colorize("___", Color.YELLOW);
+//
+//                      break;
+//                  default:
+//                      replacement = response.get(j);
+//                      break;
+//              }
+//              // Remplace le trou par la réponse de l'élève dans le StringBuffer
+//              matcher.appendReplacement(phrasesRemplies, replacement);
+//              j++;
+//          }
+//          // Ajoute la fin de la phrase au StringBuffer
+//          matcher.appendTail(phrasesRemplies);
+//          phrasesRemplies.append("\n");
+//      }
+//
+//      // Affiche le StringBuffer qui contient les phrases remplies
+//      System.out.println(phrasesRemplies);
+//  }
   private String colorize(String text, Color backgroundColor) {
 	    return "\u001B[" + backgroundColor + "m" + text + "\u001B[0m";
   }

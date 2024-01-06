@@ -28,7 +28,7 @@
 // *  2 -- Marie -- allemand -- Claude -- AVANCE -- 41
 // */
 //public class NiveauApprenant{
-//
+//	
 //    private String id;
 //
 //    private Langue langue;
@@ -50,12 +50,10 @@
 //     * @param eleve l'objet Eleve pour lequel on crée un niveau dans une langue
 //     * @param professeur l'objet Professeur en charge de l'enseignement de l'élève dans cette langue
 //     */
-//    public NiveauApprenant(Apprenant apprenant, Langue langue) {
+//    public NiveauApprenant(Apprenant apprenant) {
 //        this.id = apprenant.getId();
-////        this.pseudoProfesseur = professeur.getPseudo();
-////        this.langue = professeur.getLangue();
-//        this.niveau = apprenant.getBaremeNiveau(this.langue);
-//        this.langue = langue;
+//        this.niveau = apprenant.getBaremeNiveau();
+//        this.langue = apprenant.getLangue();
 //        this.setScore(0);
 //    }
 //
@@ -79,10 +77,10 @@
 //    }
 //
 //    /**
-//     * Met à jour le niveau de l'élève en fonction de sa performance dans la langue enseignée par le professeur.
+//     * Met à jour le niveau de l'élève en fonction de sa performance dans la langue.
 //     */
 //    public void updateNiveau() {
-//        //this.niveau = this.eleve.getBaremeNiveau(this.langue);
+////        this.niveau = this.apprenant.getBaremeNiveau();
 //    }
 //
 //    /**
@@ -102,24 +100,6 @@
 //    public void setApprenant(Apprenant apprenant) {
 //        this.id = apprenant.getId();
 //    }
-//
-////    /**
-////     * Retourne le pseudo du professeur en charge de l'enseignement de l'élève dans cette langue.
-////     *
-////     * @return le pseudo du professeur
-////     */
-////    public String getPseudoProfesseur() {
-////        return pseudoProfesseur;
-////    }
-//
-////    /**
-////     * Modifie le professeur en charge de l'enseignement de l'élève dans cette langue.
-////     *
-////     * @param professeur le nouvel objet Professeur en charge de l'enseignement de l'élève
-////     */
-////    public void setProfesseur(Professeur professeur) {
-////        this.pseudoProfesseur = professeur.getPseudo();
-////    }
 //
 //    /**
 //     * Retourne le score de l'élève dans cette langue.
@@ -157,24 +137,6 @@
 //        this.score = score;
 //    }
 //
-////    /**
-////     *  Représentation textuelle de la classe NiveauxEleves.
-////     *  Cette méthode est appelée automatiquement lorsque l'on utilise la fonction {@code print} sur un objet de type NiveauxEleves.
-////     *  Elle permet d'afficher de manière lisible les informations contenues dans l'objet.
-////     *  @return une chaîne de caractères contenant les informations de l'objet NiveauxEleves.
-////     */
-////    @Override
-////    public String toString() {
-////        return "NiveauxEleves{" +
-////                "\n index=" + index +
-////                "\n pseudoEleve=" + pseudoEleve +
-////        "\n langue=" + langue +
-////                "\n niveau=" + niveau +
-////                "\n pseudoProfesseur=" + pseudoProfesseur +
-////        "\n score=" + score +
-////                "\n}";
-////    }
-//
 //    /**
 //     * Cette méthode met à jour le niveau de l'utilisateur actif (un élève) dans une langue donnée, en fonction de son score dans cette langue.
 //     * Si le score est inférieur à 20, le niveau est défini comme "débutant"
@@ -186,7 +148,7 @@
 //     * @see NiveauxEleves#updateScore(Boolean, Dao)
 //     * @throws SQLException
 //     */
-//    public void updateNiveau(Langue lang, BaremeNiveau niveauElevesDao) {
+//    public void updateNiveau(Langue lang, Dao niveauElevesDao) {
 //        if (this.getScore() < 20) {
 //            this.setNiveau(BaremeNiveau.DEBUTANT);
 //        } else if (this.getScore() >= 20 && this.getScore() < 40) {
@@ -208,7 +170,7 @@
 //     * @see ReponseEleve#valide()
 //     *  @throws SQLException
 //     */
-//    public void updateScore(Boolean eleveValide, Dao niveauElevesDao) throws SQLException {
+//    public void updateScore(Boolean eleveValide, Dao niveauElevesDao) {
 //        // Mise à jour du score de l'enregistrement
 //        if(eleveValide){
 //            this.score++;

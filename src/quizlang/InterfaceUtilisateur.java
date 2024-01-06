@@ -288,7 +288,7 @@ public class InterfaceUtilisateur extends JFrame {
 				
 				JFrame menuExerciceFrame = new JFrame("Veuillez choisir un exercice :");
 				menuExerciceFrame.setSize(600, 400);
-//		        menuExerciceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		        menuExerciceFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				menuExerciceFrame.setLocationRelativeTo(null);
 		        
 		        JPanel menuExercicePanel = new JPanel();
@@ -297,13 +297,12 @@ public class InterfaceUtilisateur extends JFrame {
 		        ArrayList<JButton> buttonsExo = new ArrayList<JButton>();
 
 		        for (Exercice exoA : exercicesAccessibles) {
-		        	
 		        	JButton boutonExercice = new JButton(exoA.previewTextApprenant());
 		        	menuExercicePanel.add(boutonExercice);
 		        	buttonsExo.add(boutonExercice);
 		        }
 		        JButton boutonQuit = new JButton("Quitter");
-		        menuPrincipalPanel.add(boutonQuit);
+		        menuExercicePanel.add(boutonQuit);
 
 		        menuExerciceFrame.add(menuExercicePanel);
 		        menuExerciceFrame.setVisible(true);
@@ -312,44 +311,15 @@ public class InterfaceUtilisateur extends JFrame {
 			        button.addActionListener(new ActionListener() {
 			            @Override
 			            public void actionPerformed(ActionEvent e) {
+			            	menuExerciceFrame.dispose();
 			            	Exercice exerciceChoisi = exercicesAccessibles.get(buttonsExo.indexOf(button));
 			            	String textExo = exerciceChoisi.textExercice();
 			            	// construction de la réponse de l'exercice
-                            ReponseApprenant reponseApprenant= exerciceChoisi.construireReponse((Apprenant) apprenant);
-                            
-                         // correction des réponses de l'élève
-                            System.out.println("\nCorrection :\n");
-                            
-                            reponseApprenant.affichePhrasesRempliesAvecCouleurs(parseur.getReversedPattern()); // on reconstitue l'exercice avec les réponses de l'élève en mettant des couleurs selon si sa réponse est bonne  ou non
+                            ReponseApprenant reponseApprenant = exerciceChoisi.construireReponse((Apprenant) apprenant);
 
-                            if (reponseApprenant.valide()) { // l'élève a réussi l'exercice et gagne un point dans son score de la langue
-                                System.out.println("Félicitations, vous avez réussi l'exercice.");
-                                System.out.println("Vous deviez obtenir " + reponseApprenant.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponseApprenant.getNoteDonnee() + "!\n");
-                            } else { // l'élève n'a pas réussi l'exercice
-                                System.out.println("Dommage, vous n'avez pas réussi l'exercice.");
-                                System.out.println("Vous deviez obtenir " + reponseApprenant.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponseApprenant.getNoteDonnee() + "...\n");
-                            }
-
-//                            // on demande à l'utilisateur s'il veut voir les réponses correctes
-//                            System.out.println("Voulez-vous voir les réponses correctes ?");
-//                            System.out.println("" +
-//                                    "- 1 : Oui\n" +
-//                                    "- 2 : Non");
-//                            System.out.print("Votre réponse : ");
-//                            inputUser = scannerInputUser.nextLine(); // on récupère son choix
-//                            if(inputUser.equals("1")) {
-//                                exerciceChoisi.afficherCorrection();
-//                            }
-//
-//                            // on update le score de l'élève et au besoin on update le niveau de l'élève
-//                            Boolean eleveValide = reponseApprenant.valide();
-//                            for (NiveauxEleves niv : listNiveauxUtilisateur) {
-//                                if (niv.getPseudoEleve().equals(utilisateurActif.getPseudo()) && niv.getLangue() == exerciceChoisi.getLangue()) {
-//                                    niv.updateScore(eleveValide, niveauElevesDao);
-//                                    niv.updateNiveau(exerciceChoisi.getLangue(), niveauElevesDao);
-//                                    break;
-//                                }
-//                            }
+                            // on update le score de l'élève et au besoin on update le niveau de l'élève
+                            Boolean eleveValide = reponseApprenant.valide();
+                            
 			            	
 			            }
 			        });
@@ -360,8 +330,7 @@ public class InterfaceUtilisateur extends JFrame {
 		            @Override
 		            public void actionPerformed(ActionEvent e) {
 //		                System.exit(0);
-		            	menuPrincipalFrame.dispose();
-		                new InterfaceUtilisateur(gestionnaire);
+		            	menuExerciceFrame.dispose();
 		            }
 		        });
 		        

@@ -27,6 +27,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import utilisateurs.Apprenant;
 
 //
@@ -165,26 +170,40 @@ public class Exercice {
 //            System.out.println(phrase.getPhraseAvecTrous());
 //        }
 //    }
-    public void afficheExercice() {
-    	
-    	//on récupère tous les mots à placer de chaque phrase de l'exercice
-    	ArrayList<String> allMotsAPlacer = new ArrayList<>();
-    	
-    	for (PhraseATrous phrase : listPhrases) {
-    		allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-    	}
-    	
-    	// on randomise la liste des des mots à placer
-    	Collections.shuffle(allMotsAPlacer);
-    	
-    	// on affiche la liste des mots à placer
-    	System.out.println("Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n"); //on affiche la liste de tous les mots à placer
-    	
-    	// on affiche la phrase avec les trousS.
-    	for (PhraseATrous phrase : listPhrases) {
-    		System.out.println(phrase.getPhraseAvecTrous());
-    	}
+    public void afficheExerciceSwing() {
+        // Créer la fenêtre Swing
+        JFrame frame = new JFrame("Exercice");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+
+        // Créer un panneau pour afficher l'exercice
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Créer un composant Swing pour afficher la liste des mots à placer
+        ArrayList<String> allMotsAPlacer = new ArrayList<>();
+        for (PhraseATrous phrase : listPhrases) {
+            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+        }
+        Collections.shuffle(allMotsAPlacer);
+        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+        panel.add(motsAPlacerLabel);
+
+        // Créer des composants Swing pour afficher chaque phrase avec les trous
+        for (PhraseATrous phrase : listPhrases) {
+            String phraseText = phrase.getPhraseAvecTrous();
+            JLabel phraseLabel = new JLabel(phraseText);
+            panel.add(phraseLabel);
+        }
+
+        // Ajouter le panneau à la fenêtre
+        frame.getContentPane().add(panel);
+
+        // Rendre la fenêtre visible
+        frame.setVisible(true);
     }
+
     public String textExercice() {
     	StringBuilder result = new StringBuilder();
     	//on récupère tous les mots à placer de chaque phrase de l'exercice
