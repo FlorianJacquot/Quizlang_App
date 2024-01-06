@@ -160,7 +160,7 @@ public class Apprenant extends Utilisateur {
     public String viewAvailableExercises() throws IOException {
     	ImportExercice ie = new ImportExercice();
     	StringBuilder result = new StringBuilder();
-    	
+    	result.append(niveau.name()).append("\n");
         System.out.println("Exercices disponibles :");
         List<Exercice> listeExercices = ie.importDossier("../EXO");
         for (Exercice exercice : listeExercices) {

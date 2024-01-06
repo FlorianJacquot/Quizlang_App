@@ -22,11 +22,15 @@
 //
 package quizlang;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -115,9 +119,10 @@ public class Exercice {
     }
     public String previewTextApprenant() {
     	StringBuilder result = new StringBuilder();
+    	result.append(niveau.name()+System.lineSeparator());
     	// Affiche seulement les 3 premières phrases du texte
     	for (int i = 0; i < 3 && i < listPhrases.size(); i++) {
-    		result.append(listPhrases.get(i).getPhraseAvecTrous()).append("\n");
+    		result.append("\n"+listPhrases.get(i).getPhraseAvecTrous()).append("\n");
     	}
     	
     	// Ajoute un message indiquant qu'il y a plus de phrases dans le texte
@@ -170,39 +175,104 @@ public class Exercice {
 //            System.out.println(phrase.getPhraseAvecTrous());
 //        }
 //    }
-    public void afficheExerciceSwing() {
-        // Créer la fenêtre Swing
-        JFrame frame = new JFrame("Exercice");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+//    public void afficheExerciceSwing() {
+//        // Créer la fenêtre Swing
+//        JFrame frame = new JFrame("Exercice");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(600, 400); 
+//
+//        // Créer un panneau pour afficher l'exercice
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//
+//        // Créer un composant Swing pour afficher la liste des mots à placer
+//        ArrayList<String> allMotsAPlacer = new ArrayList<>();
+//        for (PhraseATrous phrase : listPhrases) {
+//            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+//        }
+//        Collections.shuffle(allMotsAPlacer);
+//        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+//        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+//        Font font = motsAPlacerLabel.getFont();
+//        motsAPlacerLabel.setFont(new Font(font.getName(), Font.BOLD, 25));
+//        panel.add(motsAPlacerLabel);
+//
+//        // Créer des composants Swing pour afficher chaque phrase avec les trous
+//        for (PhraseATrous phrase : listPhrases) {
+//            String phraseText = phrase.getPhraseAvecTrous();
+//            JLabel phraseLabel = new JLabel(phraseText);
+//            Font phraseFont = phraseLabel.getFont();
+//            phraseLabel.setFont(new Font(phraseFont.getName(), Font.PLAIN, 25));
+//            panel.add(phraseLabel);
+//        }
+//
+//        // Ajouter le panneau à la fenêtre
+//        frame.getContentPane().add(panel);
+//
+//        // Rendre la fenêtre visible
+//        frame.setVisible(true);
+//    }
+    
+    
+    
+//    public void afficheExerciceSwing() {
+//        // Créer la fenêtre Swing
+//        JFrame frame = new JFrame("Exercice");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(800, 600); // Ajustez la taille selon vos besoins
+//
+//        // Créer un panneau pour afficher l'exercice
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//        panel.setBackground(Color.WHITE); // Couleur de fond du panneau
+//
+//        // Créer un composant Swing pour afficher la liste des mots à placer
+//        ArrayList<String> allMotsAPlacer = new ArrayList<>();
+//        for (PhraseATrous phrase : listPhrases) {
+//            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+//        }
+//        Collections.shuffle(allMotsAPlacer);
+//        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+//        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+//        Font font = motsAPlacerLabel.getFont();
+//        motsAPlacerLabel.setFont(new Font(font.getName(), Font.BOLD, 25));
+//        panel.add(motsAPlacerLabel);
+//
+//        // Ajouter une marge après le label des mots à placer
+//        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+//
+//        // Créer des composants Swing pour afficher chaque phrase avec les trous
+//        for (PhraseATrous phrase : listPhrases) {
+//            String phraseText = phrase.getPhraseAvecTrous();
+//            JLabel phraseLabel = new JLabel(phraseText);
+//            Font phraseFont = phraseLabel.getFont();
+//            phraseLabel.setFont(new Font(phraseFont.getName(), Font.PLAIN, 20)); // Réduire la taille de la police
+//            panel.add(phraseLabel);
+//
+//            // Ajouter une marge après chaque label de phrase
+//            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+//        }
+//
+//        // Ajouter un espace en bas du panneau
+//        panel.add(Box.createVerticalGlue());
+//
+//        // Ajouter le panneau à la fenêtre
+//        frame.getContentPane().add(panel);
+//
+//        // Centrer la fenêtre sur l'écran
+//        frame.setLocationRelativeTo(null);
+//
+//        // Rendre la fenêtre visible
+//        frame.setVisible(true);
+//    }
 
-        // Créer un panneau pour afficher l'exercice
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        // Créer un composant Swing pour afficher la liste des mots à placer
-        ArrayList<String> allMotsAPlacer = new ArrayList<>();
-        for (PhraseATrous phrase : listPhrases) {
-            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-        }
-        Collections.shuffle(allMotsAPlacer);
-        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
-        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-        panel.add(motsAPlacerLabel);
-
-        // Créer des composants Swing pour afficher chaque phrase avec les trous
-        for (PhraseATrous phrase : listPhrases) {
-            String phraseText = phrase.getPhraseAvecTrous();
-            JLabel phraseLabel = new JLabel(phraseText);
-            panel.add(phraseLabel);
-        }
-
-        // Ajouter le panneau à la fenêtre
-        frame.getContentPane().add(panel);
-
-        // Rendre la fenêtre visible
-        frame.setVisible(true);
-    }
+    
+    
+    
+    
+    
+    
+    
 
     public String textExercice() {
     	StringBuilder result = new StringBuilder();

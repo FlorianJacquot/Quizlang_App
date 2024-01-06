@@ -1,3 +1,4 @@
 flo;;Jac;Florian;FR;DEBUTANT
-juju;;gui;ju;JP;DEBUTANT
-ju;;q;j;JP;AVANCE
+ju;;gui;ju;JP;DEBUTANT
+juju;;q;j;JP;INTERMEDIAIRE
+jujuju;;q;j;JP;AVANCE

@@ -292,12 +292,14 @@ public class InterfaceUtilisateur extends JFrame {
 				menuExerciceFrame.setLocationRelativeTo(null);
 		        
 		        JPanel menuExercicePanel = new JPanel();
-		        menuExercicePanel.setLayout(new GridLayout(1, exercicesAccessibles.size()));
+		        menuExercicePanel.setLayout(new GridLayout(0,1));
+//		        menuExercicePanel.setLayout(new BoxLayout(menuExercicePanel, BoxLayout.Y_AXIS));
 		        
 		        ArrayList<JButton> buttonsExo = new ArrayList<JButton>();
 
 		        for (Exercice exoA : exercicesAccessibles) {
-		        	JButton boutonExercice = new JButton(exoA.previewTextApprenant());
+		        	JButton boutonExercice = new JButton("<html>" + exoA.previewTextApprenant().replaceAll("\n", "<br>") + "</html>");
+
 		        	menuExercicePanel.add(boutonExercice);
 		        	buttonsExo.add(boutonExercice);
 		        }
