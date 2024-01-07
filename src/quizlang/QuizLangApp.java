@@ -5,6 +5,8 @@ import javax.swing.SwingUtilities;
 /**
  * La classe QuizLangApp est la classe principale du programme QuizLang. Elle
  * contient la méthode main, qui est le point d'entrée du programme.
+ * 
+ * @author Florian Jacquot
  */
 public class QuizLangApp {
 

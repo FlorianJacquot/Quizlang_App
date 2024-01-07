@@ -198,9 +198,9 @@ public class ReponseApprenant {
 	/**
 	 * Méthode pour mettre à jour le niveau de l'apprenant à partir du score.
 	 * Il y a trois niveaux :
-	 * 		- score < 5 : niveau débutant
-	 * 		- 5 <= score < 10 : niveau intermédiaire
-	 * 		- score >= 10 : niveau avancé
+	 * 		- score &lt; 5 : niveau débutant
+	 * 		- 5 &lt;= score &lt; 10 : niveau intermédiaire
+	 * 		- score &gt;= 10 : niveau avancé
 	 */
 	public void updateNiveau() {
 		if (apprenant.getScore() < 5) {

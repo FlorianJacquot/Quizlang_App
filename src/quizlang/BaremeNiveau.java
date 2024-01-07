@@ -91,7 +91,7 @@ public enum BaremeNiveau {
 	 * Méthode statique pour obtenir une instance de BaremeNiveau à partir d'une
 	 * chaîne de caractères
 	 * 
-	 * @param niveau
+	 * @param niveau Le niveau en chaine de caractères que l'on veut en BaremeNiveau
 	 * @return le niveau
 	 */
 	public static BaremeNiveau fromString(String niveau) {
@@ -107,12 +107,12 @@ public enum BaremeNiveau {
 	/**
 	 * Méthode pour comparer deux niveaux en utilisant le nombre de points qui leur
 	 * sont attribués en fonction des réponses. On veut avoir l'ordre suivant :
-	 * DEBUTANT < INTERMEDIAIRE < AVANCE
+	 * DEBUTANT &lt; INTERMEDIAIRE &lt; AVANCE
 	 *
 	 * @param autreNiveau le niveau à comparer.
 	 * @return la valeur de la comparaison : 
-	 * 		- une valeur < 0 si le niveau actuel est inférieur à l'autre niveau. 
-	 * 		- une valeur > 0 si le niveau actuel est supérieur à l'autre niveau. 
+	 * 		- une valeur &lt; 0 si le niveau actuel est inférieur à l'autre niveau. 
+	 * 		- une valeur &gt; 0 si le niveau actuel est supérieur à l'autre niveau. 
 	 * 		- une valeur == 0 si les deux niveaux sont équivalents.
 	 */
 	public int compare(BaremeNiveau autreNiveau) {
@@ -132,8 +132,8 @@ public enum BaremeNiveau {
 	/**
 	 * Méthode pour déterminer si le niveau actuel est inférieur ou équivalent à un
 	 * autre niveau, en utilisant le nombre de points qui leur sont attribués en
-	 * fonction des réponses. On veut avoir l'ordre suivant : DEBUTANT <
-	 * INTERMEDIAIRE < AVANCE
+	 * fonction des réponses. On veut avoir l'ordre suivant : DEBUTANT &lt;
+	 * INTERMEDIAIRE &lt; AVANCE
 	 *
 	 * @param autreNiveau le niveau à comparer.
 	 * @return true si le niveau actuel est inférieur ou équivalent à l'autre
