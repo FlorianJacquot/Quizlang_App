@@ -1,12 +1,7 @@
 package quizlang;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 
 //import fake_quizlet.exercice.Exercice;
 //import fake_quizlet.notation.ValeurReponse;
@@ -15,752 +10,304 @@ import java.awt.event.ActionListener;
 //import fake_quizlet.utilisateurs.Eleve;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
-
 import utilisateurs.Apprenant;
 
 /**
-*  La classe ReponseEleve est une classe abstraite qui représente la réponse d'un élève à un exercice.
-* Elle contient :
-* - l'exercice que l'élève a fait,
-* - l'élève qui a répondu,
-* - les réponses fournies par l'élève,
-* - la correction de ses réponses : chaque réponse fournie est attribuée une {@link ValeurReponse} : VRAI, FAUX ou NR (non répondu)
-* - la note calculée
-* - et le seuil de passation : la note qu'il faut atteindre pour que l'execice soit considéré comme réussi
-* Cette classe implémente les interfaces {@link Correction} et {@link Notation}.
-*
-* La classe {@link ReponseEleveExoATrous} étend cette classe abstraite.
-*
-* @see Correction
-* @see Notation
-* @see ReponseEleveExoATrous
-*/
+ * La classe ReponseEleve représente la réponse d'un apprenant à un exercice. 
+ * Elle contient : 
+ * 		- l'exercice que l'apprenant a fait, 
+ * 		- l'apprenant qui a répondu, 
+ * 		- les réponses fournies par l'apprenant, 
+ * 		- la correction de ses réponses : chaque réponse fournie est attribuée une
+ * {@link ValeurReponse} : VRAI, FAUX ou NR (non répondu) 
+ * 		- la note calculée 
+ * 		- et le seuil de passation : la note qu'il faut atteindre pour que l'execice
+ * soit considéré comme réussi.
+ */
 public class ReponseApprenant {
 
-  /**
-   * L'exercice auquel appartiennent ces réponses
-   */
-  Exercice exercice;
+	/**
+	 * L'exercice auquel appartiennent ces réponses
+	 */
+	Exercice exercice;
 
-  /**
-   * L'élève qui a fait l'exercice.
-   */
-  Apprenant apprenant; // l'élève qui fait l'exercice
+	/**
+	 * L'apprenant qui a fait l'exercice.
+	 */
+	Apprenant apprenant;
 
-  /**
-   * Les réponses que l'élève a founies
-   */
-  ArrayList<ArrayList<String>> reponsesFournies = new ArrayList<>();
+	/**
+	 * Les réponses que l'apprenant a founies
+	 */
+	ArrayList<ArrayList<String>> reponsesFournies = new ArrayList<>();
 
-  /**
-   * La correction des réponses fournies par l'élève (la correction est faite avec l'interface {@link Correction}.
-   * On attribue à chaque réponse fournie une {@link ValeurReponse}.
-   */
-  private ArrayList<ArrayList<ValeurReponse>> reponsesCorrection = new ArrayList<>();
+	/**
+	 * La correction des réponses fournies par l'apprenant
+	 */
+	private ArrayList<ArrayList<ValeurReponse>> reponsesCorrection = new ArrayList<>();
 
-  /**
-   * La note calculée avec l'interface {@link Notation}.
-   */
-  protected Float noteDonnee = 0.0F;
+	/**
+	 * La note calculée avec l'interface
+	 */
+	protected Float noteDonnee = 0.0F;
 
-  /**
-   *  La note qu'il faut atteindre (fixée par le professeur) pour que l'exercice soit considéré comme réussi
-   */
-  protected Float seuilPassation = 0.0F;
+	/**
+	 * La note qu'il faut atteindre (fixée par le professeur) pour que l'exercice
+	 * soit considéré comme réussi
+	 */
+	protected Float seuilPassation = 0.0F;
 
-  /**
-   * Constructeur pour la classe ReponseEleve.
-   * @param exercice l'exercice que l'élève a fait
-   * @param eleve l'élève qui a répondu à l'exercice
-   */
-//  public ReponseApprenant(Exercice exercice, Apprenant apprenant) {
-//      this.exercice = exercice;
-//      this.apprenant = apprenant;
-//
-//      // Définition du seuil de passation pour l'exercice
-//      this.setSeuilPassation();
-//
-//      // Initialisation des réponses fournies
-//      this.reponsesFournies = new ArrayList<>();
-//
-//      // Création de la fenêtre Swing
-//      JFrame frame = new JFrame("Réponses de l'apprenant");
-//      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//      frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-//      frame.setLocationRelativeTo(null);
-//
-//      // Création d'un panneau pour afficher l'exercice et les réponses
-//      JPanel panel = new JPanel();
-//      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//
-//      // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-//      ArrayList<String> allMotsAPlacer = new ArrayList<>();
-//      for (PhraseATrous phrase : exercice.getListPhrases()) {
-//          allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-//      }
-//      Collections.shuffle(allMotsAPlacer);
-//      String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
-//      JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-//      panel.add(motsAPlacerLabel);
-//
-//      // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses
-//      int i = 1;
-//      for (PhraseATrous phrase : exercice.getListPhrases()) {
-//          JPanel phrasePanel = new JPanel();
-//          phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-//
-//          JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
-////          Font font = phraseLabel.getFont();
-////          phraseLabel.setFont(new Font(font.getName(), Font.BOLD, 25));
-//          phrasePanel.add(phraseLabel);
-//
-//          int j = 1;
-//          for (String mot : phrase.getMotsAPlacer()) {
-//              JPanel motPanel = new JPanel();
-//              motPanel.setLayout(new FlowLayout());
-//              JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
-//              JTextField motTextField = new JTextField(15);
-//              motPanel.add(motLabel);
-//              motPanel.add(motTextField);
-//              phrasePanel.add(motPanel);
-//              j++;
-//          }
-//          i++;
-//          panel.add(phrasePanel);
-//      }
-//
-//      // Création d'un bouton pour soumettre les réponses
-//      JButton submitButton = new JButton("Soumettre les réponses");
-//      submitButton.addActionListener(new ActionListener() {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-//              // Collecter les réponses des champs de texte
-//              collecterReponses(panel);
-//
-//              // On corrige les réponses de l'élève
-//              corrige();
-//              // On calcule la note de l'élève pour l'exercice
-//              calculNote();
-//              
-//              String message;
-//              if (valide()) {
-//                  message = "Félicitations, vous avez réussi l'exercice.\n"
-//                          + "Vous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "!";
-//              } else {
-//                  message = "Dommage, vous n'avez pas réussi l'exercice.\n"
-//                          + "Vous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "...";
-//              }
-//
-//              // Afficher le message dans une boîte de dialogue
-//              JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
-//
-//              // Afficher la correction
-//              frame.dispose();
-//              afficheCorrectionSwing();
-//          }
-//      });
-//      panel.add(submitButton);
-//
-//      // Ajouter le panneau à la fenêtre
-//      frame.getContentPane().add(panel);
-//
-//      // Rendre la fenêtre visible
-//      frame.setVisible(true);
-//  }
-  
-
+	/**
+	 * Constructeur pour la classe ReponseApprenant.
+	 * 
+	 * @param exercice l'exercice que l'apprenant a fait
+	 * @param apprenant    l'apprenant qui a répondu à l'exercice
+	 */
 	public ReponseApprenant(Exercice exercice, Apprenant apprenant) {
-	    this.exercice = exercice;
-	    this.apprenant = apprenant;
-	
-	    // Définition du seuil de passation pour l'exercice
-	    this.setSeuilPassation();
-	
-	    // Initialisation des réponses fournies
-	    this.reponsesFournies = new ArrayList<>();
+		this.exercice = exercice;
+		this.apprenant = apprenant;
+
+		// Définition du seuil de passation pour l'exercice
+		this.setSeuilPassation();
+
+		// Initialisation des réponses fournies
+		this.reponsesFournies = new ArrayList<>();
 	}
-	
 
+	/**
+	 * Méthode qui collecte les réponses de l'apprenant depuis un panneau Swing.
+	 * 
+	 * @param panel Le panneau Swing contenant les réponses de l'apprenant.
+	 */
+	public void collecterReponses(JPanel panel) {
+		ArrayList<String> listeTampon = new ArrayList<>();
+		for (Component component : panel.getComponents()) {
+			listeTampon.clear(); // on vide la liste tampon
+			if (component instanceof JPanel) {
+				JPanel phrasePanel = (JPanel) component;
+				for (Component innerComponent : phrasePanel.getComponents()) {
+					if (innerComponent instanceof JPanel) {
+						JPanel motPanel = (JPanel) innerComponent;
+						for (Component subComponent : motPanel.getComponents()) {
+							if (subComponent instanceof JTextField) {
+								JTextField motTextField = (JTextField) subComponent;
+								String reponse = motTextField.getText();
+								listeTampon.add(reponse);
+							}
+						}
+					}
+				}
+				this.reponsesFournies.add(new ArrayList<String>(listeTampon));
+			}
+		}
+	}
 
-  public void collecterReponses(JPanel panel) {
-//      int phraseIndex = 0;
-      ArrayList<String> listeTampon = new ArrayList<>();
-      for (Component component : panel.getComponents()) {
-    	  listeTampon.clear(); // on vide la liste tampon
-          if (component instanceof JPanel) {
-              JPanel phrasePanel = (JPanel) component;
-//              int motIndex = 0;
-              for (Component innerComponent : phrasePanel.getComponents()) {
-                  if (innerComponent instanceof JPanel) {
-                      JPanel motPanel = (JPanel) innerComponent;
-                      for (Component subComponent : motPanel.getComponents()) {
-                          if (subComponent instanceof JTextField) {
-                              JTextField motTextField = (JTextField) subComponent;
-                              String reponse = motTextField.getText();
-                              listeTampon.add(reponse);
-//                              System.out.println(reponse);
-//                              System.out.println(phraseIndex);
-//                              System.out.println(reponsesFournies);
-                              
-//                              motIndex++;
-                          }
-                      }
-                  }
-              }
-              this.reponsesFournies.add(new ArrayList<String>(listeTampon));
-//              phraseIndex++;
-          }
-      }
-  }
-// ---------------------------------------------------------------
-// ---------------------------------------------------------------
-// ---------------------------------------------------------------
-//  public ReponseApprenant(Exercice exercice, Apprenant apprenant) {
-//	  this.exercice = exercice;
-//	  this.apprenant = apprenant;
-//	  
-//	  // Définition du seuil de passation pour l'exercice
-//	  this.setSeuilPassation();
-//	  
-//	  // Initialisation des réponses fournies
-//	  this.reponsesFournies = new ArrayList<>();
-//	  
-//	  // Création de la fenêtre Swing
-//	  JFrame frame = new JFrame("Réponses de l'apprenant");
-//	  frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//	  frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-//	  frame.setLocationRelativeTo(null);
-//	  
-//	  // Création d'un panneau pour afficher l'exercice et les réponses
-//	  JPanel panel = new JPanel();
-//	  panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//	  
-//	  // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-//	  displayMotsAPlacer(panel);
-//	  
-//	  // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses
-//	  int i = 1;
-//	  for (PhraseATrous phrase : exercice.getListPhrases()) {
-//		  JPanel phrasePanel = createPhrasePanel(phrase, i);
-//		  i++;
-//		  panel.add(phrasePanel);
-//	  }
-//	  
-//	  // Création d'un bouton pour soumettre les réponses
-//	  createSubmitButton(panel, frame);
-//	  
-//	  // Ajouter le panneau à la fenêtre
-//	  frame.getContentPane().add(panel);
-//	  
-//	  // Ajout du panneau principal dans un JScrollPane
-//	  JScrollPane scrollPane = new JScrollPane(panel);
-//	  scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//	  scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Désactive la barre de défilement horizontale
-//	  // Ajouter le JScrollPane à la fenêtre
-//	  frame.getContentPane().add(scrollPane);
-//	  
-//	  // Rendre la fenêtre visible
-//	  frame.setVisible(true);
-//  }
-//  
-//  private void displayMotsAPlacer(JPanel panel) {
-//	  ArrayList<String> allMotsAPlacer = new ArrayList<>();
-//	  for (PhraseATrous phrase : exercice.getListPhrases()) {
-//		  allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-//	  }
-//	  Collections.shuffle(allMotsAPlacer);
-//	  String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer);
-//	  
-//	  JTextArea motsAPlacerTextArea = new JTextArea(motsAPlacerText);
-//	  motsAPlacerTextArea.setFont(new Font("SansSerif", Font.BOLD, 14));
-//	  motsAPlacerTextArea.setEditable(false);
-////        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-////        motsAPlacerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-//	  panel.add(motsAPlacerTextArea);
-//  }
-//  
-//  private JPanel createPhrasePanel(PhraseATrous phrase, int index) {
-//	  JPanel phrasePanel = new JPanel();
-//	  phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-//	  
-//	  JTextPane phraseTextPane = new JTextPane();
-//	  phraseTextPane.setEditable(false);
-//	  phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
-//	  phraseTextPane.setText("<html>Phrase " + index + " : " + phrase.getPhraseAvecTrous() + "</html>");
-//	  
-//	  phrasePanel.add(phraseTextPane);
-//	  
-//	  int j = 1;
-//	  for (String mot : phrase.getMotsAPlacer()) {
-//		  JPanel motPanel = createMotPanel(mot, j);
-//		  j++;
-//		  phrasePanel.add(motPanel);
-//	  }
-//	  return phrasePanel;
-//  }
-//  
-//  private JPanel createMotPanel(String mot, int index) {
-//	  JPanel motPanel = new JPanel();
-//	  motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
-//	  
-//	  JLabel motLabel = new JLabel("Mot manquant " + index + ": ");
-//	  motLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-//	  JTextField motTextField = new JTextField(15);
-//	  motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
-//	  
-//	  motPanel.add(motLabel);
-//	  motPanel.add(motTextField);
-//	  return motPanel;
-//  }
-//  
-//  private void createSubmitButton(JPanel panel, JFrame frame) {
-//	  JButton submitButton = new JButton("Soumettre les réponses");
-//	  submitButton.setFont(new Font("SansSerif", Font.BOLD, 14));
-//	  submitButton.setBackground(new Color(50, 150, 50));
-//	  submitButton.setForeground(Color.WHITE);
-//	  submitButton.addActionListener(new ActionListener() {
-//		  @Override
-//		  public void actionPerformed(ActionEvent e) {
-//			  collecterReponses(panel);
-//			  corrige();
-//			  calculNote();
-//			  
-//			  String message = (valide()) ?
-//					  "Félicitations, vous avez réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "!" :
-//						  "Dommage, vous n'avez pas réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "...";
-//			  
-//			  // Afficher le message dans une boîte de dialogue
-//			  JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
-//			  
-//			  // Afficher la correction
-//			  frame.dispose();
-//			  afficheCorrectionSwing();
-//		  }
-//	  });
-//	  panel.add(submitButton);
-//  }
-//  
-//  
-//  private void collecterReponses(JPanel panel) {
-////      int phraseIndex = 0;
-//	  ArrayList<String> listeTampon = new ArrayList<>();
-//	  for (Component component : panel.getComponents()) {
-//		  listeTampon.clear(); // on vide la liste tampon
-//		  if (component instanceof JPanel) {
-//			  JPanel phrasePanel = (JPanel) component;
-////              int motIndex = 0;
-//			  for (Component innerComponent : phrasePanel.getComponents()) {
-//				  if (innerComponent instanceof JPanel) {
-//					  JPanel motPanel = (JPanel) innerComponent;
-//					  for (Component subComponent : motPanel.getComponents()) {
-//						  if (subComponent instanceof JTextField) {
-//							  JTextField motTextField = (JTextField) subComponent;
-//							  String reponse = motTextField.getText();
-//							  listeTampon.add(reponse);
-////                              System.out.println(reponse);
-////                              System.out.println(phraseIndex);
-////                              System.out.println(reponsesFournies);
-//							  
-////                              motIndex++;
-//						  }
-//					  }
-//				  }
-//			  }
-//			  this.reponsesFournies.add(new ArrayList<String>(listeTampon));
-////              phraseIndex++;
-//		  }
-//	  }
-//  }
-//---------------------------------------------------------------
-//---------------------------------------------------------------
-//---------------------------------------------------------------
-  
-  
-//  public void afficheCorrectionSwing() {
-//	    // Création de la fenêtre Swing
-//	    JFrame frame = new JFrame("Correction de l'apprenant");
-//	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//	    frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-//	    frame.setLocationRelativeTo(null);
-//
-//	    // Création d'un panneau pour afficher la correction
-//	    JPanel panel = new JPanel();
-//	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//
-//	    // Encadrez le panneau principal dans un JScrollPane
-//	    JScrollPane scrollPane = new JScrollPane(panel);
-//	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//
-//	    // Ajouter le JScrollPane à la fenêtre
-//	    frame.getContentPane().add(scrollPane);
-//
-//	    // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-//	    displayMotsAPlacer(panel);
-//
-//	    // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
-//	    int i = 1;
-//	    for (PhraseATrous phrase : exercice.getListPhrases()) {
-//	        JPanel phrasePanel = new JPanel();
-//	        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-//
-//	        JTextPane phraseTextPane = new JTextPane();
-//	        phraseTextPane.setEditable(false);
-//	        phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
-//	        phraseTextPane.setText("<html>Phrase " + i + " : " + phrase.getPhraseAvecTrous() + "</html>");
-//
-//	        phrasePanel.add(phraseTextPane);
-//
-//	        int j = 1;
-//	        for (String mot : phrase.getMotsAPlacer()) {
-//	            JPanel motPanel = new JPanel();
-//	            motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
-//	            JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
-//
-//	            JTextField motTextField = new JTextField(15);
-//	            motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
-//	            motTextField.setEditable(false); // Le champ de texte est en lecture seule
-//	            motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
-//
-//	            ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
-//
-//	            switch (correction) {
-//	                case VRAI:
-//	                    motTextField.setBackground(Color.GREEN);
-//	                    break;
-//	                case FAUX:
-//	                    motTextField.setBackground(Color.RED);
-//	                    break;
-//	            }
-//
-//	            motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
-//	            motPanel.add(motLabel);
-//	            motPanel.add(motTextField);
-//	            phrasePanel.add(motPanel);
-//	            j++;
-//	        }
-//	        i++;
-//
-//	        panel.add(phrasePanel);
-//	    }
-//
-//	    // Rendre la fenêtre visible
-//	    frame.setVisible(true);
-//	}
+	/**
+	 * Getter pour l'exercice correspondant à cette réponse.
+	 * 
+	 * @return l'exercice correspondant à cette réponse.
+	 */
+	public Exercice getExercice() {
+		return this.exercice;
+	}
 
+	/**
+	 * Getter pour l'apprenant ayant répondu à l'exercice.
+	 * 
+	 * @return l'apprenant ayant répondu à l'exercice.
+	 */
+	public Apprenant getApprenant() {
+		return this.apprenant;
+	}
 
-  /**
-   * Retourne l'exercice correspondant à cette réponse.
-   * @return l'exercice correspondant à cette réponse.
-   */
-  public Exercice getExercice(){
-      return this.exercice;
-  }
+	/**
+	 * Getter pour les réponses fournies par l'apprenant.
+	 * 
+	 * @return les réponses fournies par l'apprenant.
+	 */
+	public ArrayList<ArrayList<String>> getReponsesFournies() {
+		return this.reponsesFournies;
+	}
 
-  /**
-   * Retourne l'élève ayant répondu à l'exercice.
-   * @return l'élève ayant répondu à l'exercice.
-   */
-  public  Apprenant getApprenant(){
-      return this.apprenant;
-  }
+	/**
+	 * Getter pour la correction des réponses fournies : chaque réponse est attribuée
+	 * une {@link ValeurReponse}.
+	 * 
+	 * @return la correction des réponses fournies.
+	 */
+	public ArrayList<ArrayList<ValeurReponse>> getReponsesCorrection() {
+		return reponsesCorrection;
+	}
 
-  /**
-   * Retourne les réponses fournies par l'élève.
-   * @return les réponses fournies par l'élève.
-   */
-  public ArrayList<ArrayList<String>> getReponsesFournies(){
-      return this.reponsesFournies;
-  }
+	/**
+	 * Instancie la correction des réponses fournies.
+	 * 
+	 * @param reponsesCorrection la correction des réponses fournies.
+	 */
+	public void setReponsesCorrection(ArrayList<ArrayList<ValeurReponse>> reponsesCorrection) {
+		this.reponsesCorrection = reponsesCorrection;
+	}
 
-  /**
-   * Retourne la correction des réponses fournies : chaque réponse est attribuée une {@link ValeurReponse}.
-   * @return la correction des réponses fournies.
-   */
-  public ArrayList<ArrayList<ValeurReponse>> getReponsesCorrection() {
-      return reponsesCorrection;
-  }
+	/**
+	 * Retourne la note calculée pour cette réponse.
+	 * 
+	 * @return la note calculée pour cette réponse.
+	 */
+	public Float getNoteDonnee() {
+		return noteDonnee;
+	}
 
-  /**
-   * Instancie la correction des réponses fournies.
-   * @param reponsesCorrection la correction des réponses fournies.
-   */
-  public void setReponsesCorrection(ArrayList<ArrayList<ValeurReponse>> reponsesCorrection) {
-      this.reponsesCorrection = reponsesCorrection;
-  }
+	/**
+	 * Instancie la note donnée à cette réponse.
+	 * 
+	 * @param noteDonnee la nouvelle note donnée à cette réponse.
+	 */
+	public void setNoteDonnee(Float noteDonnee) {
+		this.noteDonnee = noteDonnee;
+	}
 
-  /**
-   * Retourne la note calculée pour cette réponse.
-   * @return la note calculée pour cette réponse.
-   */
-  public Float getNoteDonnee() {
-      return noteDonnee;
-  }
+	/**
+	 * Retourne vrai si l'apprenant valide (si la note calculée est supérieure ou égale
+	 * au seuil de passation), faux sinon.
+	 * 
+	 * @return vrai si l'élève valide, faux sinon.
+	 */
+	public Boolean valide() {
+		return this.noteDonnee >= this.seuilPassation;
+	}
 
-  /**
-   * Instancie la note donnée à cette réponse.
-   * @param noteDonnee la nouvelle note donnée à cette réponse.
-   */
-  public void setNoteDonnee(Float noteDonnee) {
-      this.noteDonnee = noteDonnee;
-  }
+	/**
+	 * Méthode pour mettre à jour le score global de l'apprenant. 
+	 * S'il valide l'exercice son score augmente de 1, s'il ne valide pas son score baisse de 1.
+	 * 
+	 * @param eleveValide
+	 */
+	public void updateScore(Boolean eleveValide) {
+		// Mise à jour du score en fonction
+		int score = apprenant.getScore();
+		if (eleveValide) {
+			score++;
+		} else {
+			score--;
+		}
+		apprenant.updateScore(score);
+	}
 
-  /**
-   * Retourne vrai si l'élève valide (si la note calculée est supérieure ou égale au seuil de passation), faux sinon.
-   * @return vrai si l'élève valide, faux sinon.
-   */
-  public Boolean valide() {
-      return this.noteDonnee >= this.seuilPassation;
-  }
+	/**
+	 * Méthode pour mettre à jour le niveau de l'apprenant à partir du score.
+	 * Il y a trois niveaux :
+	 * 		- score < 5 : niveau débutant
+	 * 		- 5 <= score < 10 : niveau intermédiaire
+	 * 		- score >= 10 : niveau avancé
+	 */
+	public void updateNiveau() {
+		if (apprenant.getScore() < 5) {
+			apprenant.setNiveau(BaremeNiveau.DEBUTANT);
+		} else if (apprenant.getScore() >= 5 && apprenant.getScore() < 10) {
+			apprenant.setNiveau(BaremeNiveau.INTERMEDIAIRE);
+		} else if (apprenant.getScore() >= 10) {
+			apprenant.setNiveau(BaremeNiveau.AVANCE);
+		}
+	}
 
-  public void updateScore(Boolean eleveValide) {
-      // Mise à jour du score en fonction
-	  int score = apprenant.getScore();
-      if(eleveValide){
-          score++;
-      }
-      else {
-          score--;
-      }
-      apprenant.updateScore(score);
-  }
-  
-  public void updateNiveau() {
-      if (apprenant.getScore() < 5) {
-          apprenant.setNiveau(BaremeNiveau.DEBUTANT);
-      } else if (apprenant.getScore() >= 5 && apprenant.getScore() < 10) {
-    	  apprenant.setNiveau(BaremeNiveau.INTERMEDIAIRE);
-      } else if (apprenant.getScore() >= 10) {
-    	  apprenant.setNiveau(BaremeNiveau.AVANCE);
-      }
-  }
-  /**
-   *  Méthode setSeuilPassation qui définit le seuil de réussite d'un exercice en fonction de son pourcentage de réussite et du nombre de réponses à fournir.
-   *  Elle calcule le nombre total de réponses à fournir en comptant le nombre de mots à placer dans chaque phrase de l'exercice, puis définit le seuil de réussite en multipliant ce nombre par le pourcentage de réussite de l'exercice.
-   */
-  public void setSeuilPassation() {
-      Exercice exo = (Exercice) this.exercice;
-      Float totalReponsesAFournir = 0.0F;
-      for (PhraseATrous phrase : exo.getListPhrases()) {
-          totalReponsesAFournir += phrase.getMotsAPlacer().size();
-      }
-      this.seuilPassation = exo.getPourcentage() * totalReponsesAFournir;
-  }
+	/**
+	 * Méthode setSeuilPassation qui définit le seuil de réussite d'un exercice en
+	 * fonction de son pourcentage de réussite et du nombre de réponses à fournir.
+	 * Elle calcule le nombre total de réponses à fournir en comptant le nombre de
+	 * mots à placer dans chaque phrase de l'exercice, puis définit le seuil de
+	 * réussite en multipliant ce nombre par le pourcentage de réussite de
+	 * l'exercice.
+	 */
+	public void setSeuilPassation() {
+		Exercice exo = (Exercice) this.exercice;
+		Float totalReponsesAFournir = 0.0F;
+		for (PhraseATrous phrase : exo.getListPhrases()) {
+			totalReponsesAFournir += phrase.getMotsAPlacer().size();
+		}
+		this.seuilPassation = exo.getPourcentage() * totalReponsesAFournir;
+	}
 
-  /**
-   * Getter qui permet de récupérer la note seuil que l'élève doit atteindre pour que l'exercice soit considéré comme réussi, validé.
-   * @return la note seuil que l'élève doit atteindre pour que l'exercice soit considéré comme réussi, validé.
-   */
-  public Float getSeuilPassation(){
-      return this.seuilPassation;
-  }
+	/**
+	 * Getter qui permet de récupérer la note seuil que l'élève doit atteindre pour
+	 * que l'exercice soit considéré comme réussi, validé.
+	 * 
+	 * @return la note seuil que l'élève doit atteindre pour que l'exercice soit
+	 *         considéré comme réussi.
+	 */
+	public Float getSeuilPassation() {
+		return this.seuilPassation;
+	}
 
-//  /**
-//   * Affiche les phrases de l'exercice avec les trous remplis par les réponses de l'élève.
-//   * Si la réponse de l'élève est correcte, le mot est affiché en vert.
-//   * Si la réponse est incorrecte, le mot est affiché en rouge.
-//   * Si la réponse n'a pas été fournie, "___" est affiché en jaune.
-//   *
-//   * @param pattern le motif de l'expression régulière utilisé pour détecter les trous dans
-//   *                les phrases
-//   */
-//  public void affichePhrasesRempliesAvecCouleurs(Pattern pattern) {
-//      // Crée une liste qui contient l'attribut phraseAvecTrous de chaque objet Phrase de l'exo
-//      ArrayList<String> allPhraseAvecTrous = new ArrayList<>();
-//      for (PhraseATrous phrase : ((Exercice) exercice).getListPhrases()) {
-//          allPhraseAvecTrous.add(phrase.getPhraseAvecTrous());
-//      }
-//
-//      // Crée un StringBuffer qui contiendra les phrases dans lesquelles on a rempli les trous par les réponses de l'élève
-//      StringBuffer phrasesRemplies = new StringBuffer();
-//      for (int i = 0; i < allPhraseAvecTrous.size(); i++) {
-//          // Récupère la phrase et les réponses de l'élève pour cette phrase
-//          String phrase = allPhraseAvecTrous.get(i);
-//          ArrayList<String> response = reponsesFournies.get(i);
-//          Matcher matcher = pattern.matcher(phrase);
-//
-//          int j = 0;
-//          while (matcher.find()) { // tant qu'on trouve des trous dans la phrase
-//              ValeurReponse correction = this.getReponsesCorrection().get(i).get(j);
-//              String replacement = null;
-//              switch (correction) { // en fonction de la correction, détermine la couleur de la réponse de l'élève
-//                  case VRAI:
-////                      replacement = Ansi.ansi().bg(Ansi.Color.GREEN).a(response.get(j)).reset().toString();
-//                      replacement = colorize(response.get(j), Color.GREEN);
-//;
-//                      break;
-//                  case FAUX:
-////                      replacement = Ansi.ansi().bg(Ansi.Color.RED).a(response.get(j)).reset().toString();
-//                      replacement = colorize(response.get(j), Color.RED);
-//
-//                      break;
-//                  case NR:
-//                      replacement = colorize("___", Color.YELLOW);
-//
-//                      break;
-//                  default:
-//                      replacement = response.get(j);
-//                      break;
-//              }
-//              // Remplace le trou par la réponse de l'élève dans le StringBuffer
-//              matcher.appendReplacement(phrasesRemplies, replacement);
-//              j++;
-//          }
-//          // Ajoute la fin de la phrase au StringBuffer
-//          matcher.appendTail(phrasesRemplies);
-//          phrasesRemplies.append("\n");
-//      }
-//
-//      // Affiche le StringBuffer qui contient les phrases remplies
-//      System.out.println(phrasesRemplies);
-//  }
-//  private String colorize(String text, Color backgroundColor) {
-//	    return "\u001B[" + backgroundColor + "m" + text + "\u001B[0m";
-//  }
-  
-  /**
-   * Méthode qui corrige les réponses de l'élève à l'exercice à trous.
-   * Pour chaque phrase de l'exercice, la méthode compare chaque réponse de l'élève à la réponse attendue et attribue la valeur VRAI si la réponse de l'élève est correcte, FAUX si elle est incorrecte et NR si elle est vide.
-   */
-  public void corrige() {
-      ArrayList<ValeurReponse> listTampon = new ArrayList<>();
-      Exercice exo = (Exercice) exercice;
-      ArrayList<PhraseATrous> listPhrases = exo.getListPhrases();
+	/**
+	 * Méthode qui corrige les réponses de l'élève à l'exercice à trous. Pour chaque
+	 * phrase de l'exercice, la méthode compare chaque réponse de l'élève à la
+	 * réponse attendue et attribue la valeur VRAI si la réponse de l'élève est
+	 * correcte, FAUX si elle est incorrecte et NR si elle est vide.
+	 */
+	public void corrige() {
+		ArrayList<ValeurReponse> listTampon = new ArrayList<>();
+		Exercice exo = (Exercice) exercice;
+		ArrayList<PhraseATrous> listPhrases = exo.getListPhrases();
 
-      for(int i=0; i < listPhrases.size(); i++) { //pour i allant de 0 au nombre de phrases dans l'exo
+		for (int i = 0; i < listPhrases.size(); i++) { // pour i allant de 0 au nombre de phrases dans l'exo
 
-          listTampon.clear(); // on vide la liste tampon après chaque phrase
-          PhraseATrous phrase = listPhrases.get(i);
+			listTampon.clear(); // on vide la liste tampon après chaque phrase
+			PhraseATrous phrase = listPhrases.get(i);
 
-          for(int j=0; j < phrase.getMotsAPlacer().size(); j++){ //pour j allant de 0 au nombre de mots à placer dans une phrase
-              String reponseElevePourLaPhraseIEtLeMotJ = this.reponsesFournies.get(i).get(j);
+			for (int j = 0; j < phrase.getMotsAPlacer().size(); j++) { // pour j allant de 0 au nombre de mots à placer
+																		// dans une phrase
+				String reponseElevePourLaPhraseIEtLeMotJ = this.reponsesFournies.get(i).get(j);
 
-              if(reponseElevePourLaPhraseIEtLeMotJ.equals(phrase.getMotsAPlacer().get(j))){ //si la réponse de l'élève correspond à la bonne réponse
-                  listTampon.add(ValeurReponse.VRAI);
-              }
-              else if (reponseElevePourLaPhraseIEtLeMotJ.isEmpty()) { //si l'élève n'a pas répondu
-                  listTampon.add(ValeurReponse.NR);
-              }
-              else{ //si la réponse de l'élève est fausse
-                  listTampon.add(ValeurReponse.FAUX);
-              }
+				if (reponseElevePourLaPhraseIEtLeMotJ.equals(phrase.getMotsAPlacer().get(j))) { // si la réponse de
+																								// l'élève correspond à
+																								// la bonne réponse
+					listTampon.add(ValeurReponse.VRAI);
+				} else if (reponseElevePourLaPhraseIEtLeMotJ.isEmpty()) { // si l'élève n'a pas répondu
+					listTampon.add(ValeurReponse.NR);
+				} else { // si la réponse de l'élève est fausse
+					listTampon.add(ValeurReponse.FAUX);
+				}
 
-          }
+			}
 
-          this.getReponsesCorrection().add(new ArrayList<ValeurReponse>(listTampon));
-      }
-  }
-  
-  /**
-   * Méthode qui définit le seuil de passation de l'exercice à trous,
-   * en somme la note qu'il faut atteindre pour que l'exercice soit considéré comme réussi
-   * Le seuil de passation est égal au pourcentage d'exigence de l'exercice (renseigné par le professeur lors de la création des exercices) multiplié par le nombre de réponses à fournir en tout, multiplié par le nombre de points attribués à une réponse correcte selon le {@link BaremeNiveau} de l'élève.
-   */
-  public void calculNote() {
-      BaremeNiveau niveauExercice = this.getExercice().getNiveau();
-      for (ArrayList<ValeurReponse> phraseCorrigee : this.getReponsesCorrection()) {
-          for (ValeurReponse v : phraseCorrigee) {
-              switch (v) {
-                  case NR:
-                      this.noteDonnee += niveauExercice.getNr();
-                      break;
-                  case FAUX:
-                      this.noteDonnee += niveauExercice.getFaux();
-                      break;
-                  case VRAI:
-                      this.noteDonnee += niveauExercice.getVrai();
-                      break;
-                  default:
-                      System.out.println("Valeur incorrecte");
-                      break;
-              }
-          }
-      }
-  }
-  
-  
-  
-  
-//public void afficheCorrectionSwing() {
-//// Création de la fenêtre Swing
-//JFrame frame = new JFrame("Correction de l'apprenant");
-//frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-//frame.setLocationRelativeTo(null);
-//
-//// Création d'un panneau pour afficher la correction
-//JPanel panel = new JPanel();
-//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-//
-//// Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-//ArrayList<String> allMotsAPlacer = new ArrayList<>();
-//for (PhraseATrous phrase : exercice.getListPhrases()) {
-//    allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-//}
-//Collections.shuffle(allMotsAPlacer);
-//String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
-//JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-//panel.add(motsAPlacerLabel);
-//
-//// Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
-//int i = 1;
-//for (PhraseATrous phrase : exercice.getListPhrases()) {
-//    JPanel phrasePanel = new JPanel();
-//    phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-//
-//    JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
-//    phrasePanel.add(phraseLabel);
-//
-//    int j = 1;
-//    for (String mot : phrase.getMotsAPlacer()) {
-//        JPanel motPanel = new JPanel();
-//        motPanel.setLayout(new FlowLayout());
-//        JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
-//        JTextField motTextField = new JTextField(15);
-//        motTextField.setEditable(false); // Le champ de texte est en lecture seule
-//        motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
-//        ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
-//
-//        switch (correction) {
-//            case VRAI:
-//                motTextField.setBackground(Color.GREEN);
-//                break;
-//            case FAUX:
-//                motTextField.setBackground(Color.RED);
-//                break;
-//        }
-//
-//        motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
-//        motPanel.add(motLabel);
-//        motPanel.add(motTextField);
-//        phrasePanel.add(motPanel);
-//        j++;
-//    }
-//    i++;
-//
-//    panel.add(phrasePanel);
-//}
-//
-//// Ajouter le panneau à la fenêtre
-//frame.getContentPane().add(panel);
-//
-//// Rendre la fenêtre visible
-//frame.setVisible(true);
-//}
+			this.getReponsesCorrection().add(new ArrayList<ValeurReponse>(listTampon));
+		}
+	}
+
+	/**
+	 * Calcule la note attribuée à la réponse de l'apprenant en utilisant le barème de
+	 * notation spécifié dans le niveau de l'exercice. La note est calculée en
+	 * parcourant la correction des réponses, et en attribuant des points en
+	 * fonction de la valeur de chaque réponse (VRAI, FAUX, NR). Les points sont
+	 * définis par le barème du niveau de l'exercice.
+	 * 
+	 * Le calcul de la note prend en compte les points attribués pour chaque phrase
+	 * corrigée, en ajoutant les points correspondants pour chaque type de réponse.
+	 * 
+	 * @see BaremeNiveau
+	 * @see ValeurReponse
+	 */
+	public void calculNote() {
+		BaremeNiveau niveauExercice = this.getExercice().getNiveau();
+		for (ArrayList<ValeurReponse> phraseCorrigee : this.getReponsesCorrection()) {
+			for (ValeurReponse v : phraseCorrigee) {
+				switch (v) {
+				case NR:
+					this.noteDonnee += niveauExercice.getNr();
+					break;
+				case FAUX:
+					this.noteDonnee += niveauExercice.getFaux();
+					break;
+				case VRAI:
+					this.noteDonnee += niveauExercice.getVrai();
+					break;
+				default:
+					System.out.println("Valeur incorrecte");
+					break;
+				}
+			}
+		}
+	}
 }
