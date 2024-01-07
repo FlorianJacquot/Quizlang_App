@@ -162,28 +162,31 @@ public class Apprenant extends Utilisateur {
 		List<Exercice> listeExercices = ie.importDossier("../EXO");
 		for (Exercice exercice : listeExercices) {
 			// n'affiche que les exercices associés à la langue du professeur
-			if (exercice.getLangue() == langue && exercice.getNiveau() == niveau) {
+//			if (exercice.getLangue() == langue && exercice.getNiveau() == niveau) {
+//				exoAccessibles.add(exercice);
+//			}
+			if (exercice.getLangue() == langue && exercice.getNiveau().plusPetitQue(niveau)) {
 				exoAccessibles.add(exercice);
 			}
 		}
 		return exoAccessibles;
 	}
 	
-    public String viewAvailableExercises() throws IOException {
-    	ImportExercice ie = new ImportExercice();
-    	StringBuilder result = new StringBuilder();
-    	result.append(niveau.name()).append("\n");
-        System.out.println("Exercices disponibles :");
-        List<Exercice> listeExercices = ie.importDossier("../EXO");
-        for (Exercice exercice : listeExercices) {
-        	// n'affiche que les exercices associés à la langue du professeur
-        	if (exercice.getLangue() == langue && exercice.getNiveau() == niveau) {
-        		String exoView = exercice.previewText();
-        		result.append("- ").append(exoView).append("\n");
-        	}
-        }
-        return result.toString();
-    }
+//    public String viewAvailableExercises() throws IOException {
+//    	ImportExercice ie = new ImportExercice();
+//    	StringBuilder result = new StringBuilder();
+//    	result.append(niveau.name()).append("\n");
+//        System.out.println("Exercices disponibles :");
+//        List<Exercice> listeExercices = ie.importDossier("../EXO");
+//        for (Exercice exercice : listeExercices) {
+//        	// n'affiche que les exercices associés à la langue du professeur
+//        	if (exercice.getLangue() == langue && exercice.getNiveau() == niveau) {
+//        		String exoView = exercice.previewText();
+//        		result.append("- ").append(exoView).append("\n");
+//        	}
+//        }
+//        return result.toString();
+//    }
     
 
     

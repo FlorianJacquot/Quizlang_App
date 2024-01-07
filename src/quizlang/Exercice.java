@@ -121,12 +121,12 @@ public class Exercice {
     	StringBuilder result = new StringBuilder();
     	result.append(niveau.name()+System.lineSeparator());
     	// Affiche seulement les 3 premières phrases du texte
-    	for (int i = 0; i < 3 && i < listPhrases.size(); i++) {
+    	for (int i = 0; i < 2 && i < listPhrases.size(); i++) {
     		result.append("\n"+listPhrases.get(i).getPhraseAvecTrous()).append("\n");
     	}
     	
     	// Ajoute un message indiquant qu'il y a plus de phrases dans le texte
-    	if (listPhrases.size() > 3) {
+    	if (listPhrases.size() > 2) {
     		result.append("...\n");
     	} else {
     		result.append("\n"); // retour à la ligne pour que ça fasse plus clean

@@ -103,4 +103,23 @@ public enum BaremeNiveau {
         // Gérer le cas où la chaîne ne correspond à aucune Langue
         throw new IllegalArgumentException("Niveau non prise en charge : " + niveau);
     }
+    
+    public int compare(BaremeNiveau autreNiveau) {
+        int compareVrai = Integer.compare(this.vrai, autreNiveau.vrai);
+        if (compareVrai != 0) {
+            return compareVrai;
+        }
+
+        int compareFaux = Integer.compare(this.faux, autreNiveau.faux);
+        if (compareFaux != 0) {
+            return compareFaux;
+        }
+
+        return Integer.compare(this.nr, autreNiveau.nr);
+    }
+    
+    public boolean plusPetitQue(BaremeNiveau autreNiveau) {
+        return this.compare(autreNiveau) >= 0;
+    }
+
 }

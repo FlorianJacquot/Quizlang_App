@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -256,13 +257,13 @@ public class InterfaceUtilisateur extends JFrame {
 
         JLabel titre = new JLabel("Bonjour, que voulez-vous faire ?");
         JButton boutonExercice = new JButton("Faire un exercice");
-        JButton boutonResults = new JButton("Voir résultats");
+//        JButton boutonResults = new JButton("Voir résultats");
         JButton boutonDeleteAccount = new JButton("Supprimer le compte");
         JButton boutonQuit = new JButton("Quitter");
 
         menuPrincipalPanel.add(titre);
         menuPrincipalPanel.add(boutonExercice);
-        menuPrincipalPanel.add(boutonResults);
+//        menuPrincipalPanel.add(boutonResults);
         menuPrincipalPanel.add(boutonDeleteAccount);
         menuPrincipalPanel.add(boutonQuit);
 
@@ -316,19 +317,11 @@ public class InterfaceUtilisateur extends JFrame {
 			            public void actionPerformed(ActionEvent e) {
 			            	menuExerciceFrame.dispose();
 			            	Exercice exerciceChoisi = exercicesAccessibles.get(buttonsExo.indexOf(button));
-			            	String textExo = exerciceChoisi.textExercice();
+//			            	String textExo = exerciceChoisi.textExercice();
 			            	// construction de la réponse de l'exercice
                             ReponseApprenant reponseApprenant = exerciceChoisi.construireReponse((Apprenant) apprenant);
-                            System.out.println(reponseApprenant.getNoteDonnee());
-                            System.out.println(reponseApprenant.getSeuilPassation());
-                            // on update le score de l'élève et au besoin on update le niveau de l'élève
-                            Boolean eleveValide = reponseApprenant.valide();
-                            System.out.println(eleveValide);
-                            reponseApprenant.updateScore(eleveValide);
-                            reponseApprenant.updateNiveau();
-                            gestionnaire.updateApprenant(apprenant);
+                            afficherReponseApprenant(reponseApprenant);
                             
-			            	
 			            }
 			        });
 			        i++;
@@ -347,12 +340,12 @@ public class InterfaceUtilisateur extends JFrame {
 				
 			}
         });
-        boutonResults.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 2 sélectionnée");
-            }
-        });
+//        boutonResults.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 2 sélectionnée");
+//            }
+//        });
         boutonDeleteAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -390,7 +383,7 @@ public class InterfaceUtilisateur extends JFrame {
         JLabel titre = new JLabel("Bonjour, que voulez-vous faire ?");
         JButton boutonCreateExercice = new JButton("Créer un exercice");
         JButton boutonManageExercice = new JButton("Afficher les exercices");
-        JButton boutonResults = new JButton("Voir les résultats des apprenants");
+//        JButton boutonResults = new JButton("Voir les résultats des apprenants");
         JButton boutonQuit = new JButton("Quitter");
         
         JButton boutonDeleteAccount = new JButton("Supprimer le compte");
@@ -398,7 +391,7 @@ public class InterfaceUtilisateur extends JFrame {
         menuPrincipalPanel.add(titre);
         menuPrincipalPanel.add(boutonCreateExercice);
         menuPrincipalPanel.add(boutonManageExercice);
-        menuPrincipalPanel.add(boutonResults);
+//        menuPrincipalPanel.add(boutonResults);
         menuPrincipalPanel.add(boutonDeleteAccount);
         menuPrincipalPanel.add(boutonQuit);
 
@@ -428,12 +421,12 @@ public class InterfaceUtilisateur extends JFrame {
 				}
         	}
         });
-        boutonResults.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 2 sélectionnée");
-            }
-        });
+//        boutonResults.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                JOptionPane.showMessageDialog(menuPrincipalFrame, "Option 2 sélectionnée");
+//            }
+//        });
         boutonDeleteAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -707,5 +700,198 @@ public class InterfaceUtilisateur extends JFrame {
         return !txtId.getText().isEmpty() && passwordField.getPassword().length > 0 &&
                 !txtNom.getText().isEmpty() && !txtPrenom.getText().isEmpty();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public void afficherReponseApprenant(ReponseApprenant reponse) {
+        JFrame frame = new JFrame("Réponses de l'apprenant");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        displayMotsAPlacer(reponse.getExercice(), panel);
+        createPhrasePanels(reponse.getExercice(), panel);
+
+        createSubmitButton(reponse, panel, frame);
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        frame.getContentPane().add(scrollPane);
+
+        frame.setVisible(true);
+    }
+    
+    private void displayMotsAPlacer(Exercice exercice, JPanel panel) {
+        ArrayList<String> allMotsAPlacer = new ArrayList<>();
+        for (PhraseATrous phrase : exercice.getListPhrases()) {
+            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+        }
+        Collections.shuffle(allMotsAPlacer);
+        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer);
+
+        JTextArea motsAPlacerTextArea = new JTextArea(motsAPlacerText);
+        motsAPlacerTextArea.setFont(new Font("SansSerif", Font.BOLD, 14));
+        motsAPlacerTextArea.setEditable(false);
+        panel.add(motsAPlacerTextArea);
+    }
+
+    private void createPhrasePanels(Exercice exercice, JPanel panel) {
+        int i = 1;
+        for (PhraseATrous phrase : exercice.getListPhrases()) {
+            JPanel phrasePanel = createPhrasePanel(phrase, i);
+            i++;
+            panel.add(phrasePanel);
+        }
+    }
+
+    private JPanel createPhrasePanel(PhraseATrous phrase, int index) {
+        JPanel phrasePanel = new JPanel();
+        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+
+        JTextPane phraseTextPane = new JTextPane();
+        phraseTextPane.setEditable(false);
+        phraseTextPane.setContentType("text/html");
+        phraseTextPane.setText("<html>Phrase " + index + " : " + phrase.getPhraseAvecTrous() + "</html>");
+
+        phrasePanel.add(phraseTextPane);
+
+        int j = 1;
+        for (String mot : phrase.getMotsAPlacer()) {
+            JPanel motPanel = createMotPanel(mot, j);
+            j++;
+            phrasePanel.add(motPanel);
+        }
+        return phrasePanel;
+    }
+    
+    private JPanel createMotPanel(String mot, int index) {
+        JPanel motPanel = new JPanel();
+        motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
+
+        JLabel motLabel = new JLabel("Mot manquant " + index + ": ");
+        motLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        JTextField motTextField = new JTextField(15);
+        motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        motPanel.add(motLabel);
+        motPanel.add(motTextField);
+        return motPanel;
+    }
+    
+    private void createSubmitButton(ReponseApprenant reponse, JPanel panel, JFrame frame) {
+    	JButton submitButton = new JButton("Soumettre les réponses");
+        submitButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        submitButton.setBackground(new Color(50, 150, 50));
+        submitButton.setForeground(Color.WHITE);
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reponse.collecterReponses(panel);
+                reponse.corrige();
+                reponse.calculNote();
+                resultatExercice(reponse);
+                frame.dispose();
+                afficherCorrection(reponse);
+            }
+        });
+        panel.add(submitButton);
+    }
+    
+    private void resultatExercice(ReponseApprenant reponse) {
+    	Boolean eleveValide = reponse.valide();
+        String message = (eleveValide) ?
+                "Félicitations, vous avez réussi l'exercice.\nVous deviez obtenir " + reponse.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponse.getNoteDonnee() + "!" :
+                "Dommage, vous n'avez pas réussi l'exercice.\nVous deviez obtenir " + reponse.getSeuilPassation() + " points pour valider et vous en avez obtenu " + reponse.getNoteDonnee() + "...";
+
+        // Afficher le message dans une boîte de dialogue
+        JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
+        // on update le score de l'élève et au besoin on update le niveau de l'élève
+        reponse.updateScore(eleveValide);
+        reponse.updateNiveau();
+        gestionnaire.updateApprenant(apprenant);
+    }
+
+    private void afficherCorrection(ReponseApprenant reponse) {
+	    // Création de la fenêtre Swing
+	    JFrame frame = new JFrame("Correction de l'apprenant");
+	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+	    frame.setLocationRelativeTo(null);
+
+	    // Création d'un panneau pour afficher la correction
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+	    // Encadrez le panneau principal dans un JScrollPane
+	    JScrollPane scrollPane = new JScrollPane(panel);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+	    // Ajouter le JScrollPane à la fenêtre
+	    frame.getContentPane().add(scrollPane);
+
+	    // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
+        displayMotsAPlacer(reponse.getExercice(), panel);
+
+	    // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
+	    int i = 1;
+	    for (PhraseATrous phrase : reponse.getExercice().getListPhrases()) {
+	        JPanel phrasePanel = new JPanel();
+	        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+
+	        JTextPane phraseTextPane = new JTextPane();
+	        phraseTextPane.setEditable(false);
+	        phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
+	        phraseTextPane.setText("<html>Phrase " + i + " : " + phrase.getPhraseAvecTrous() + "</html>");
+
+	        phrasePanel.add(phraseTextPane);
+
+	        int j = 1;
+	        for (String mot : phrase.getMotsAPlacer()) {
+	            JPanel motPanel = new JPanel();
+	            motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
+	            JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
+
+	            JTextField motTextField = new JTextField(15);
+	            motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
+	            motTextField.setEditable(false); // Le champ de texte est en lecture seule
+	            motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
+
+	            ValeurReponse correction = reponse.getReponsesCorrection().get(i - 1).get(j - 1);
+
+	            switch (correction) {
+	                case VRAI:
+	                    motTextField.setBackground(Color.GREEN);
+	                    break;
+	                case FAUX:
+	                    motTextField.setBackground(Color.RED);
+	                    break;
+	            }
+
+	            motTextField.setText(reponse.reponsesFournies.get(i - 1).get(j - 1));
+	            motPanel.add(motLabel);
+	            motPanel.add(motTextField);
+	            phrasePanel.add(motPanel);
+	            j++;
+	        }
+	        i++;
+
+	        panel.add(phrasePanel);
+	    }
+
+	    // Rendre la fenêtre visible
+	    frame.setVisible(true);
+	}
+
 }
 

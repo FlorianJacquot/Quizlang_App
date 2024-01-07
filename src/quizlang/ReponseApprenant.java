@@ -194,124 +194,11 @@ public class ReponseApprenant {
 	
 	    // Initialisation des réponses fournies
 	    this.reponsesFournies = new ArrayList<>();
-	
-	    // Création de la fenêtre Swing
-	    JFrame frame = new JFrame("Réponses de l'apprenant");
-	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	    frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-	    frame.setLocationRelativeTo(null);
-	
-	    // Création d'un panneau pour afficher l'exercice et les réponses
-	    JPanel panel = new JPanel();
-	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-	
-	    // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-	    displayMotsAPlacer(panel);
-	
-	    // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses
-	    int i = 1;
-	    for (PhraseATrous phrase : exercice.getListPhrases()) {
-	        JPanel phrasePanel = createPhrasePanel(phrase, i);
-	        i++;
-	        panel.add(phrasePanel);
-	    }
-	
-	    // Création d'un bouton pour soumettre les réponses
-	    createSubmitButton(panel, frame);
-	    
-	    // Ajouter le panneau à la fenêtre
-	    frame.getContentPane().add(panel);
-	
-	    // Ajout du panneau principal dans un JScrollPane
-	    JScrollPane scrollPane = new JScrollPane(panel);
-	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Désactive la barre de défilement horizontale
-	    // Ajouter le JScrollPane à la fenêtre
-	    frame.getContentPane().add(scrollPane);
-	
-	    // Rendre la fenêtre visible
-	    frame.setVisible(true);
 	}
 	
-	private void displayMotsAPlacer(JPanel panel) {
-        ArrayList<String> allMotsAPlacer = new ArrayList<>();
-        for (PhraseATrous phrase : exercice.getListPhrases()) {
-            allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-        }
-        Collections.shuffle(allMotsAPlacer);
-        String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer);
-        
-        JTextArea motsAPlacerTextArea = new JTextArea(motsAPlacerText);
-        motsAPlacerTextArea.setFont(new Font("SansSerif", Font.BOLD, 14));
-        motsAPlacerTextArea.setEditable(false);
-//        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-//        motsAPlacerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-        panel.add(motsAPlacerTextArea);
-    }
-	
-    private JPanel createPhrasePanel(PhraseATrous phrase, int index) {
-        JPanel phrasePanel = new JPanel();
-        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-
-        JTextPane phraseTextPane = new JTextPane();
-        phraseTextPane.setEditable(false);
-        phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
-        phraseTextPane.setText("<html>Phrase " + index + " : " + phrase.getPhraseAvecTrous() + "</html>");
-
-        phrasePanel.add(phraseTextPane);
-
-        int j = 1;
-        for (String mot : phrase.getMotsAPlacer()) {
-            JPanel motPanel = createMotPanel(mot, j);
-            j++;
-            phrasePanel.add(motPanel);
-        }
-        return phrasePanel;
-    }
-	
-	private JPanel createMotPanel(String mot, int index) {
-        JPanel motPanel = new JPanel();
-        motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
-
-        JLabel motLabel = new JLabel("Mot manquant " + index + ": ");
-        motLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        JTextField motTextField = new JTextField(15);
-        motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
-
-        motPanel.add(motLabel);
-        motPanel.add(motTextField);
-        return motPanel;
-    }
-	
-	private void createSubmitButton(JPanel panel, JFrame frame) {
-		JButton submitButton = new JButton("Soumettre les réponses");
-        submitButton.setFont(new Font("SansSerif", Font.BOLD, 14));
-        submitButton.setBackground(new Color(50, 150, 50));
-        submitButton.setForeground(Color.WHITE);
-	    submitButton.addActionListener(new ActionListener() {
-	        @Override
-	        public void actionPerformed(ActionEvent e) {
-	            collecterReponses(panel);
-	            corrige();
-	            calculNote();
-	
-	            String message = (valide()) ?
-	                    "Félicitations, vous avez réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "!" :
-	                    "Dommage, vous n'avez pas réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "...";
-	
-	            // Afficher le message dans une boîte de dialogue
-	            JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
-	
-	            // Afficher la correction
-	            frame.dispose();
-	            afficheCorrectionSwing();
-	        }
-	    });
-	    panel.add(submitButton);
-	}
 
 
-  private void collecterReponses(JPanel panel) {
+  public void collecterReponses(JPanel panel) {
 //      int phraseIndex = 0;
       ArrayList<String> listeTampon = new ArrayList<>();
       for (Component component : panel.getComponents()) {
@@ -341,146 +228,241 @@ public class ReponseApprenant {
           }
       }
   }
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+//  public ReponseApprenant(Exercice exercice, Apprenant apprenant) {
+//	  this.exercice = exercice;
+//	  this.apprenant = apprenant;
+//	  
+//	  // Définition du seuil de passation pour l'exercice
+//	  this.setSeuilPassation();
+//	  
+//	  // Initialisation des réponses fournies
+//	  this.reponsesFournies = new ArrayList<>();
+//	  
+//	  // Création de la fenêtre Swing
+//	  JFrame frame = new JFrame("Réponses de l'apprenant");
+//	  frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//	  frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+//	  frame.setLocationRelativeTo(null);
+//	  
+//	  // Création d'un panneau pour afficher l'exercice et les réponses
+//	  JPanel panel = new JPanel();
+//	  panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//	  
+//	  // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
+//	  displayMotsAPlacer(panel);
+//	  
+//	  // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses
+//	  int i = 1;
+//	  for (PhraseATrous phrase : exercice.getListPhrases()) {
+//		  JPanel phrasePanel = createPhrasePanel(phrase, i);
+//		  i++;
+//		  panel.add(phrasePanel);
+//	  }
+//	  
+//	  // Création d'un bouton pour soumettre les réponses
+//	  createSubmitButton(panel, frame);
+//	  
+//	  // Ajouter le panneau à la fenêtre
+//	  frame.getContentPane().add(panel);
+//	  
+//	  // Ajout du panneau principal dans un JScrollPane
+//	  JScrollPane scrollPane = new JScrollPane(panel);
+//	  scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//	  scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Désactive la barre de défilement horizontale
+//	  // Ajouter le JScrollPane à la fenêtre
+//	  frame.getContentPane().add(scrollPane);
+//	  
+//	  // Rendre la fenêtre visible
+//	  frame.setVisible(true);
+//  }
+//  
+//  private void displayMotsAPlacer(JPanel panel) {
+//	  ArrayList<String> allMotsAPlacer = new ArrayList<>();
+//	  for (PhraseATrous phrase : exercice.getListPhrases()) {
+//		  allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+//	  }
+//	  Collections.shuffle(allMotsAPlacer);
+//	  String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer);
+//	  
+//	  JTextArea motsAPlacerTextArea = new JTextArea(motsAPlacerText);
+//	  motsAPlacerTextArea.setFont(new Font("SansSerif", Font.BOLD, 14));
+//	  motsAPlacerTextArea.setEditable(false);
+////        JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+////        motsAPlacerLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+//	  panel.add(motsAPlacerTextArea);
+//  }
+//  
+//  private JPanel createPhrasePanel(PhraseATrous phrase, int index) {
+//	  JPanel phrasePanel = new JPanel();
+//	  phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+//	  
+//	  JTextPane phraseTextPane = new JTextPane();
+//	  phraseTextPane.setEditable(false);
+//	  phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
+//	  phraseTextPane.setText("<html>Phrase " + index + " : " + phrase.getPhraseAvecTrous() + "</html>");
+//	  
+//	  phrasePanel.add(phraseTextPane);
+//	  
+//	  int j = 1;
+//	  for (String mot : phrase.getMotsAPlacer()) {
+//		  JPanel motPanel = createMotPanel(mot, j);
+//		  j++;
+//		  phrasePanel.add(motPanel);
+//	  }
+//	  return phrasePanel;
+//  }
+//  
+//  private JPanel createMotPanel(String mot, int index) {
+//	  JPanel motPanel = new JPanel();
+//	  motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
+//	  
+//	  JLabel motLabel = new JLabel("Mot manquant " + index + ": ");
+//	  motLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+//	  JTextField motTextField = new JTextField(15);
+//	  motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
+//	  
+//	  motPanel.add(motLabel);
+//	  motPanel.add(motTextField);
+//	  return motPanel;
+//  }
+//  
+//  private void createSubmitButton(JPanel panel, JFrame frame) {
+//	  JButton submitButton = new JButton("Soumettre les réponses");
+//	  submitButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+//	  submitButton.setBackground(new Color(50, 150, 50));
+//	  submitButton.setForeground(Color.WHITE);
+//	  submitButton.addActionListener(new ActionListener() {
+//		  @Override
+//		  public void actionPerformed(ActionEvent e) {
+//			  collecterReponses(panel);
+//			  corrige();
+//			  calculNote();
+//			  
+//			  String message = (valide()) ?
+//					  "Félicitations, vous avez réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "!" :
+//						  "Dommage, vous n'avez pas réussi l'exercice.\nVous deviez obtenir " + getSeuilPassation() + " points pour valider et vous en avez obtenu " + getNoteDonnee() + "...";
+//			  
+//			  // Afficher le message dans une boîte de dialogue
+//			  JOptionPane.showMessageDialog(null, message, "Résultat de l'exercice", JOptionPane.INFORMATION_MESSAGE);
+//			  
+//			  // Afficher la correction
+//			  frame.dispose();
+//			  afficheCorrectionSwing();
+//		  }
+//	  });
+//	  panel.add(submitButton);
+//  }
+//  
+//  
+//  private void collecterReponses(JPanel panel) {
+////      int phraseIndex = 0;
+//	  ArrayList<String> listeTampon = new ArrayList<>();
+//	  for (Component component : panel.getComponents()) {
+//		  listeTampon.clear(); // on vide la liste tampon
+//		  if (component instanceof JPanel) {
+//			  JPanel phrasePanel = (JPanel) component;
+////              int motIndex = 0;
+//			  for (Component innerComponent : phrasePanel.getComponents()) {
+//				  if (innerComponent instanceof JPanel) {
+//					  JPanel motPanel = (JPanel) innerComponent;
+//					  for (Component subComponent : motPanel.getComponents()) {
+//						  if (subComponent instanceof JTextField) {
+//							  JTextField motTextField = (JTextField) subComponent;
+//							  String reponse = motTextField.getText();
+//							  listeTampon.add(reponse);
+////                              System.out.println(reponse);
+////                              System.out.println(phraseIndex);
+////                              System.out.println(reponsesFournies);
+//							  
+////                              motIndex++;
+//						  }
+//					  }
+//				  }
+//			  }
+//			  this.reponsesFournies.add(new ArrayList<String>(listeTampon));
+////              phraseIndex++;
+//		  }
+//	  }
+//  }
+//---------------------------------------------------------------
+//---------------------------------------------------------------
+//---------------------------------------------------------------
+  
   
 //  public void afficheCorrectionSwing() {
-//      // Création de la fenêtre Swing
-//      JFrame frame = new JFrame("Correction de l'apprenant");
-//      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//      frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-//      frame.setLocationRelativeTo(null);
+//	    // Création de la fenêtre Swing
+//	    JFrame frame = new JFrame("Correction de l'apprenant");
+//	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//	    frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+//	    frame.setLocationRelativeTo(null);
 //
-//      // Création d'un panneau pour afficher la correction
-//      JPanel panel = new JPanel();
-//      panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//	    // Création d'un panneau pour afficher la correction
+//	    JPanel panel = new JPanel();
+//	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 //
-//      // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-//      ArrayList<String> allMotsAPlacer = new ArrayList<>();
-//      for (PhraseATrous phrase : exercice.getListPhrases()) {
-//          allMotsAPlacer.addAll(phrase.getMotsAPlacer());
-//      }
-//      Collections.shuffle(allMotsAPlacer);
-//      String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
-//      JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
-//      panel.add(motsAPlacerLabel);
+//	    // Encadrez le panneau principal dans un JScrollPane
+//	    JScrollPane scrollPane = new JScrollPane(panel);
+//	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 //
-//      // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
-//      int i = 1;
-//      for (PhraseATrous phrase : exercice.getListPhrases()) {
-//          JPanel phrasePanel = new JPanel();
-//          phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+//	    // Ajouter le JScrollPane à la fenêtre
+//	    frame.getContentPane().add(scrollPane);
 //
-//          JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
-//          phrasePanel.add(phraseLabel);
+//	    // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
+//	    displayMotsAPlacer(panel);
 //
-//          int j = 1;
-//          for (String mot : phrase.getMotsAPlacer()) {
-//              JPanel motPanel = new JPanel();
-//              motPanel.setLayout(new FlowLayout());
-//              JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
-//              JTextField motTextField = new JTextField(15);
-//              motTextField.setEditable(false); // Le champ de texte est en lecture seule
-//              motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
-//              ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
+//	    // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
+//	    int i = 1;
+//	    for (PhraseATrous phrase : exercice.getListPhrases()) {
+//	        JPanel phrasePanel = new JPanel();
+//	        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
 //
-//              switch (correction) {
-//                  case VRAI:
-//                      motTextField.setBackground(Color.GREEN);
-//                      break;
-//                  case FAUX:
-//                      motTextField.setBackground(Color.RED);
-//                      break;
-//              }
+//	        JTextPane phraseTextPane = new JTextPane();
+//	        phraseTextPane.setEditable(false);
+//	        phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
+//	        phraseTextPane.setText("<html>Phrase " + i + " : " + phrase.getPhraseAvecTrous() + "</html>");
 //
-//              motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
-//              motPanel.add(motLabel);
-//              motPanel.add(motTextField);
-//              phrasePanel.add(motPanel);
-//              j++;
-//          }
-//          i++;
+//	        phrasePanel.add(phraseTextPane);
 //
-//          panel.add(phrasePanel);
-//      }
+//	        int j = 1;
+//	        for (String mot : phrase.getMotsAPlacer()) {
+//	            JPanel motPanel = new JPanel();
+//	            motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
+//	            JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
 //
-//      // Ajouter le panneau à la fenêtre
-//      frame.getContentPane().add(panel);
+//	            JTextField motTextField = new JTextField(15);
+//	            motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
+//	            motTextField.setEditable(false); // Le champ de texte est en lecture seule
+//	            motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
 //
-//      // Rendre la fenêtre visible
-//      frame.setVisible(true);
-//  }
-  
-  
-  public void afficheCorrectionSwing() {
-	    // Création de la fenêtre Swing
-	    JFrame frame = new JFrame("Correction de l'apprenant");
-	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	    frame.setSize(600, 400); // Ajustez la taille selon vos besoins
-	    frame.setLocationRelativeTo(null);
-
-	    // Création d'un panneau pour afficher la correction
-	    JPanel panel = new JPanel();
-	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-	    // Encadrez le panneau principal dans un JScrollPane
-	    JScrollPane scrollPane = new JScrollPane(panel);
-	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-	    // Ajouter le JScrollPane à la fenêtre
-	    frame.getContentPane().add(scrollPane);
-
-	    // Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
-	    displayMotsAPlacer(panel);
-
-	    // Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
-	    int i = 1;
-	    for (PhraseATrous phrase : exercice.getListPhrases()) {
-	        JPanel phrasePanel = new JPanel();
-	        phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
-
-	        JTextPane phraseTextPane = new JTextPane();
-	        phraseTextPane.setEditable(false);
-	        phraseTextPane.setContentType("text/html"); // Utiliser le format HTML pour permettre le retour automatique à la ligne
-	        phraseTextPane.setText("<html>Phrase " + i + " : " + phrase.getPhraseAvecTrous() + "</html>");
-
-	        phrasePanel.add(phraseTextPane);
-
-	        int j = 1;
-	        for (String mot : phrase.getMotsAPlacer()) {
-	            JPanel motPanel = new JPanel();
-	            motPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 2));
-	            JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
-
-	            JTextField motTextField = new JTextField(15);
-	            motTextField.setFont(new Font("SansSerif", Font.PLAIN, 14));
-	            motTextField.setEditable(false); // Le champ de texte est en lecture seule
-	            motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
-
-	            ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
-
-	            switch (correction) {
-	                case VRAI:
-	                    motTextField.setBackground(Color.GREEN);
-	                    break;
-	                case FAUX:
-	                    motTextField.setBackground(Color.RED);
-	                    break;
-	            }
-
-	            motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
-	            motPanel.add(motLabel);
-	            motPanel.add(motTextField);
-	            phrasePanel.add(motPanel);
-	            j++;
-	        }
-	        i++;
-
-	        panel.add(phrasePanel);
-	    }
-
-	    // Rendre la fenêtre visible
-	    frame.setVisible(true);
-	}
+//	            ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
+//
+//	            switch (correction) {
+//	                case VRAI:
+//	                    motTextField.setBackground(Color.GREEN);
+//	                    break;
+//	                case FAUX:
+//	                    motTextField.setBackground(Color.RED);
+//	                    break;
+//	            }
+//
+//	            motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
+//	            motPanel.add(motLabel);
+//	            motPanel.add(motTextField);
+//	            phrasePanel.add(motPanel);
+//	            j++;
+//	        }
+//	        i++;
+//
+//	        panel.add(phrasePanel);
+//	    }
+//
+//	    // Rendre la fenêtre visible
+//	    frame.setVisible(true);
+//	}
 
 
   /**
@@ -711,4 +693,74 @@ public class ReponseApprenant {
           }
       }
   }
+  
+  
+  
+  
+//public void afficheCorrectionSwing() {
+//// Création de la fenêtre Swing
+//JFrame frame = new JFrame("Correction de l'apprenant");
+//frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//frame.setSize(600, 400); // Ajustez la taille selon vos besoins
+//frame.setLocationRelativeTo(null);
+//
+//// Création d'un panneau pour afficher la correction
+//JPanel panel = new JPanel();
+//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+//
+//// Affichage de l'exercice complet (liste des mots à placer et phrases avec trous)
+//ArrayList<String> allMotsAPlacer = new ArrayList<>();
+//for (PhraseATrous phrase : exercice.getListPhrases()) {
+//    allMotsAPlacer.addAll(phrase.getMotsAPlacer());
+//}
+//Collections.shuffle(allMotsAPlacer);
+//String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer) + "\n";
+//JLabel motsAPlacerLabel = new JLabel(motsAPlacerText);
+//panel.add(motsAPlacerLabel);
+//
+//// Création d'un panneau pour chaque phrase avec des champs de texte pour les réponses et leur correction
+//int i = 1;
+//for (PhraseATrous phrase : exercice.getListPhrases()) {
+//    JPanel phrasePanel = new JPanel();
+//    phrasePanel.setLayout(new BoxLayout(phrasePanel, BoxLayout.Y_AXIS));
+//
+//    JLabel phraseLabel = new JLabel("Phrase " + i + " : " + phrase.getPhraseAvecTrous());
+//    phrasePanel.add(phraseLabel);
+//
+//    int j = 1;
+//    for (String mot : phrase.getMotsAPlacer()) {
+//        JPanel motPanel = new JPanel();
+//        motPanel.setLayout(new FlowLayout());
+//        JLabel motLabel = new JLabel("Mot manquant " + j + ": ");
+//        JTextField motTextField = new JTextField(15);
+//        motTextField.setEditable(false); // Le champ de texte est en lecture seule
+//        motTextField.setBackground(Color.YELLOW); // Couleur par défaut pour "non répondu"
+//        ValeurReponse correction = this.getReponsesCorrection().get(i - 1).get(j - 1);
+//
+//        switch (correction) {
+//            case VRAI:
+//                motTextField.setBackground(Color.GREEN);
+//                break;
+//            case FAUX:
+//                motTextField.setBackground(Color.RED);
+//                break;
+//        }
+//
+//        motTextField.setText(reponsesFournies.get(i - 1).get(j - 1));
+//        motPanel.add(motLabel);
+//        motPanel.add(motTextField);
+//        phrasePanel.add(motPanel);
+//        j++;
+//    }
+//    i++;
+//
+//    panel.add(phrasePanel);
+//}
+//
+//// Ajouter le panneau à la fenêtre
+//frame.getContentPane().add(panel);
+//
+//// Rendre la fenêtre visible
+//frame.setVisible(true);
+//}
 }
