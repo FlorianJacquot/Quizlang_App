@@ -717,12 +717,13 @@ public class InterfaceUtilisateur extends JFrame {
 
 		// Crée une chaîne de texte affichant les mots à placer
 		String motsAPlacerText = "Les mots à placer sont : " + String.join(", ", allMotsAPlacer);
+		
+		JTextPane motTextPane = new JTextPane();
 
-		// Crée une zone de texte pour afficher les mots à placer
-		JTextArea motsAPlacerTextArea = new JTextArea(motsAPlacerText);
-		motsAPlacerTextArea.setFont(new Font("SansSerif", Font.BOLD, 14));
-		motsAPlacerTextArea.setEditable(false);
-		panel.add(motsAPlacerTextArea);
+		motTextPane.setContentType("text/html");
+		motTextPane.setText("<html>" + motsAPlacerText + "</html>");
+
+		panel.add(motTextPane);
 	}
 
 	/**

@@ -1,5 +1,3 @@
-flo;;Jac;Florian;FR;DEBUTANT;0
-ju;;gui;ju;JP;DEBUTANT;0
-juju;;q;j;JP;INTERMEDIAIRE;5
-jujuju;j;j;j;JP;DEBUTANT;4
-jujuju;;j;j;JP;AVANCE;11
+flo;mdp;Jacquot;Florian;JP;DEBUTANT;4
+mango;mdp;Wa;Aigou;FR;AVANCE;10
+juju;1234;Gui;Jule;FR;INTERMEDIAIRE;9
