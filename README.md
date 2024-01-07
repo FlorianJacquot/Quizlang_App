@@ -89,20 +89,43 @@ Selon le niveau de l'apprenant, l'évaluation change (cf. classe `BaremeNiveau`)
 
 La correction est automatique. Elle se fait via la classe `ReponseApprenant` et son attribut `corrige()` qui attribue une `ValeurReponse` à chaque réponse. Celle-ci peut être VRAI, FAUX ou NR (non-répondue). Ces valeur sont liées à la notation présentée ci-dessus. 
 
-## Installation
+## Installation et démo
 
 Pour lancer l'application :
 ```bash
-git clone 
-cd build/release
-java -jar Application_java.jar
+git clone https://github.com/FlorianJacquot/Quizlang_App.git
+cd Quizlang_App/src/
+javac  */*.java
+java quizlang.QuizLangApp
 ```
 
+### Démo
 
-[Expliquez ici comment installer et configurer votre projet. Assurez-vous de mentionner les dépendances nécessaires.]
+Il est possible de tester l'application avec les données fournies :
 
-```bash
-# Exemple d'instructions d'installation
-git clone https://github.com/votre-utilisateur/votre-projet.git
-cd votre-projet
-npm install
+- Table des apprenants 
+
+ID | MDP | Nom | Prénom | Langue | Niveau | Score  
+:--- | :--- | :--- | :--- |  :---: | :--- |  :---:   
+flo | mdp | Jacquot | Florian | JP | DEBUTANT | 4  
+mango|mdp|Wa|Aigou|FR|AVANCE|10
+juju|1234|Gui|Jule|FR|INTERMEDIAIRE|9  
+
+- Table des professeurs 
+
+ID | MDP | Nom | Prénom | Langue   
+:--- | :--- | :--- | :--- |  :---    
+pap | turing | Paroubek | Patrick | Français    
+giroux | mdp | Giroux | Benjamin | Japonais  
+nini | nihon | Nishio | Sumikazu |Japonais  
+
+- Table des exercices disponibles
+
+Langue | Niveau | Nombre d'exercice  
+:--- | :--- | :---:  
+FR | DEBUTANT | 2  
+FR | INTERMEDIAIRE | 1  
+FR | AVANCE | 1  
+JP | DEBUTANT | 1  
+JP | INTERMEDIAIRE | 1  
+JP | AVANCE | 1  
