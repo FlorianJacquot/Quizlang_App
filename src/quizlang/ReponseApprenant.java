@@ -547,6 +547,27 @@ public class ReponseApprenant {
       return this.noteDonnee >= this.seuilPassation;
   }
 
+  public void updateScore(Boolean eleveValide) {
+      // Mise à jour du score en fonction
+	  int score = apprenant.getScore();
+      if(eleveValide){
+          score++;
+      }
+      else {
+          score--;
+      }
+      apprenant.updateScore(score);
+  }
+  
+  public void updateNiveau() {
+      if (apprenant.getScore() < 5) {
+          apprenant.setNiveau(BaremeNiveau.DEBUTANT);
+      } else if (apprenant.getScore() >= 5 && apprenant.getScore() < 10) {
+    	  apprenant.setNiveau(BaremeNiveau.INTERMEDIAIRE);
+      } else if (apprenant.getScore() >= 10) {
+    	  apprenant.setNiveau(BaremeNiveau.AVANCE);
+      }
+  }
   /**
    *  Méthode setSeuilPassation qui définit le seuil de réussite d'un exercice en fonction de son pourcentage de réussite et du nombre de réponses à fournir.
    *  Elle calcule le nombre total de réponses à fournir en comptant le nombre de mots à placer dans chaque phrase de l'exercice, puis définit le seuil de réussite en multipliant ce nombre par le pourcentage de réussite de l'exercice.
@@ -627,9 +648,9 @@ public class ReponseApprenant {
 //      // Affiche le StringBuffer qui contient les phrases remplies
 //      System.out.println(phrasesRemplies);
 //  }
-  private String colorize(String text, Color backgroundColor) {
-	    return "\u001B[" + backgroundColor + "m" + text + "\u001B[0m";
-  }
+//  private String colorize(String text, Color backgroundColor) {
+//	    return "\u001B[" + backgroundColor + "m" + text + "\u001B[0m";
+//  }
   
   /**
    * Méthode qui corrige les réponses de l'élève à l'exercice à trous.

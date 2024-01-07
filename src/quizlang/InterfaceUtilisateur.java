@@ -176,7 +176,7 @@ public class InterfaceUtilisateur extends JFrame {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(";");
-                if (parts.length == 6) {
+                if (parts.length == 7) {
                     String idLearner = parts[0];
                     String mdpLearner = parts[1];
                     if (idLearner.equals(id) && mdpLearner.equals(motDePasse)) {
@@ -195,7 +195,8 @@ public class InterfaceUtilisateur extends JFrame {
 //                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueNiveauApprenant);
                         Langue langueA = Langue.fromString(parts[4]);
                         BaremeNiveau niveauA = BaremeNiveau.fromString(parts[5]);
-                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueA, niveauA);
+                        int scoreA = Integer.parseInt(parts[6]);
+                        apprenant = new Apprenant(idLearner, mdpLearner, parts[2], parts[3], langueA, niveauA, scoreA);
                         return boolLearner;
                     }
                 }
@@ -318,9 +319,14 @@ public class InterfaceUtilisateur extends JFrame {
 			            	String textExo = exerciceChoisi.textExercice();
 			            	// construction de la réponse de l'exercice
                             ReponseApprenant reponseApprenant = exerciceChoisi.construireReponse((Apprenant) apprenant);
-
+                            System.out.println(reponseApprenant.getNoteDonnee());
+                            System.out.println(reponseApprenant.getSeuilPassation());
                             // on update le score de l'élève et au besoin on update le niveau de l'élève
                             Boolean eleveValide = reponseApprenant.valide();
+                            System.out.println(eleveValide);
+                            reponseApprenant.updateScore(eleveValide);
+                            reponseApprenant.updateNiveau();
+                            gestionnaire.updateApprenant(apprenant);
                             
 			            	
 			            }
@@ -561,13 +567,6 @@ public class InterfaceUtilisateur extends JFrame {
 //	            		langue = "EN";
 //	            	}
 //	            	
-//	            	if (level.equals("Débutant")) {
-//	            		level = "1";
-//	            	} else if (level.equals("Intermédiaire")) {
-//	            		level = "2";
-//	            	} else {
-//	            		level = "3";
-//	            	}
 //	            	Map<Langue, BaremeNiveau> niveauLangueApprenant = new HashMap<Langue, BaremeNiveau>();
 //	            	Langue langueApprenant = Langue.fromString(langue);
 //	            	BaremeNiveau niveauApprenant = BaremeNiveau.fromString(level);
@@ -576,7 +575,13 @@ public class InterfaceUtilisateur extends JFrame {
 
 	            	Langue langueA = Langue.fromString(langue);
 	            	BaremeNiveau niveauA = BaremeNiveau.fromString(level);
-	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, langueA, niveauA);
+	            	int scoreA = 0;
+	            	if (niveauA == BaremeNiveau.INTERMEDIAIRE) {
+	            		scoreA = 5;
+	            	} else if (niveauA == BaremeNiveau.AVANCE) {
+	            		scoreA = 10;
+	            	}
+	            	Apprenant nouvelApprenant = new Apprenant(id, passwordString, nom, prenom, langueA, niveauA, scoreA);
 	            	gestionnaire.addLearner(nouvelApprenant, true);
 	            	
 	            	JOptionPane.showMessageDialog(menuFrame, "Création du compte réussi !");

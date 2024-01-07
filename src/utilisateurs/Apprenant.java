@@ -36,7 +36,8 @@ public class Apprenant extends Utilisateur {
 //	private Map<Langue, BaremeNiveau> niveaux = new HashMap<>();
 	private Langue langue;
 	private BaremeNiveau niveau;
-	private List<Exercice> exercices;
+	private int score;
+//	private List<Exercice> exercices;
 
 //	/**
 //	 * Liste des professeurs auprès desquels l'élève est inscrit.
@@ -54,10 +55,11 @@ public class Apprenant extends Utilisateur {
 	 * Constructeur permettant de créer un apprenant avec un login donné.
 	 * @param login login de l'élève
 	 */
-	public Apprenant(String id, String mdp, String nom, String prenom, Langue langue, BaremeNiveau niveau) {
+	public Apprenant(String id, String mdp, String nom, String prenom, Langue langue, BaremeNiveau niveau, int score) {
 		super(id, mdp, nom, prenom);
 		this.langue = langue;
 		this.niveau = niveau;
+		this.score = score;
 	}
 
 //	public void niveauApprenant() {
@@ -80,9 +82,19 @@ public class Apprenant extends Utilisateur {
 	public BaremeNiveau getBaremeNiveau(){
 		return niveau;
 	}
+	public void setNiveau(BaremeNiveau newNiveau) {
+		this.niveau = newNiveau;
+	}
 	public Langue getLangue(){
 		return langue;
 	}
+	public int getScore() {
+		
+		return score;
+	}
+    public void updateScore(int newScore) {
+        this.score = newScore;
+    }
 //	public String getLangueString() {
 //		return langue.getLangueString();
 //	}
@@ -95,15 +107,15 @@ public class Apprenant extends Utilisateur {
 	
 	
 	
-	/**
-	 * Méthode permettant de modifier le niveau de l'élève dans une langue donnée.
-	 *
-	 * @param niveau nouveau niveau de l'élève dans la langue donnée
-	 * @param langue langue pour laquelle on souhaite modifier le niveau de l'élève
-	 */
-	public void setNiveau(BaremeNiveau newNiveau) {
-		this.niveau = niveau;
-	}
+//	/**
+//	 * Méthode permettant de modifier le niveau de l'élève dans une langue donnée.
+//	 *
+//	 * @param niveau nouveau niveau de l'élève dans la langue donnée
+//	 * @param langue langue pour laquelle on souhaite modifier le niveau de l'élève
+//	 */
+//	public void setNiveau(BaremeNiveau newNiveau) {
+//		this.niveau = niveau;
+//	}
 //	public void setNiveau(BaremeNiveau niveau, Langue langue) {
 //		this.niveaux.put(langue, niveau);
 //	}
@@ -173,6 +185,9 @@ public class Apprenant extends Utilisateur {
         return result.toString();
     }
     
+
+    
+
 //    public int numberAvailableExercises() {
 //    	ImportExercice ie = new ImportExercice();
 //    	StringBuilder result = new StringBuilder();
@@ -189,18 +204,18 @@ public class Apprenant extends Utilisateur {
 //    }
 	
 	
-	public void selectExercise() throws IOException {
-		ImportExercice importExercice = new ImportExercice();
-        exercices = importExercice.importDossier("../EXO/");
-        
-    }
-
-    public void submitExercise() {
-        // Logique de soumission d'exercice
-    }
-	
-    public void viewGrades() {
-        // Logique pour afficher les notes obtenues dans les exercices
-    }
+//	public void selectExercise() throws IOException {
+//		ImportExercice importExercice = new ImportExercice();
+//        exercices = importExercice.importDossier("../EXO/");
+//        
+//    }
+//
+//    public void submitExercise() {
+//        // Logique de soumission d'exercice
+//    }
+//	
+//    public void viewGrades() {
+//        // Logique pour afficher les notes obtenues dans les exercices
+//    }
 
 }

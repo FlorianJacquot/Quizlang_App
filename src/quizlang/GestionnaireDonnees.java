@@ -34,13 +34,14 @@ public class GestionnaireDonnees {
 	        while (fileScanner.hasNextLine()) {
 	        	String line = fileScanner.nextLine();
 	        	String[] parts = line.split(";");
-	        	if (parts.length == 6) {
+	        	if (parts.length == 7) {
 	        		String id = parts[0];	        		
 	        		String mdp = parts[1];
 	        		String nom = parts[2];
 	        		String prenom = parts[3];
 	        		String langue = parts[4];
 	        		String niveau = parts[5];
+	        		String score = parts[6];
 	        		
 //	        		String[] listLN = parts[4].split(":");
 //                    String langueString = listLN[0];
@@ -55,7 +56,8 @@ public class GestionnaireDonnees {
 	        		
 	        		Langue langueA = Langue.fromString(langue);
 	            	BaremeNiveau niveauA = BaremeNiveau.fromString(niveau);
-	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, langueA, niveauA), false);
+	            	int scoreA = Integer.parseInt(score);
+	        		this.addLearner(new Apprenant(id, mdp, nom, prenom, langueA, niveauA, scoreA), false);
 	        	}
 	        }
 	        fileScanner.close();
@@ -114,10 +116,16 @@ public class GestionnaireDonnees {
     }
     
     private void writeLearnerToFile(Apprenant apprenant, String filename) {
+    	int score = 0;
+    	if (apprenant.getBaremeNiveau() == BaremeNiveau.INTERMEDIAIRE) {
+    		score = 5;
+    	} else if (apprenant.getBaremeNiveau() == BaremeNiveau.AVANCE) {
+    		score = 10;
+    	}
 		
 //		String learnerData = apprenant.getId() + "," + apprenant.getMdp() + "," + apprenant.getName() + "," + apprenant.getSurname() + "," + apprenant.getLanguageLevel();
 //		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getNiveauLangue();
-		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getLangue().name() + ";" + apprenant.getBaremeNiveau().name();
+		String learnerData = apprenant.getId() + ";" + apprenant.getMdp() + ";" + apprenant.getName() + ";" + apprenant.getSurname() + ";" + apprenant.getLangue().name() + ";" + apprenant.getBaremeNiveau().name() + ";" + score;
 		
 		try (FileWriter myWriter = new FileWriter(filename, true)){ //true pour ajouter à la fin du fichier (append)			
 			myWriter.write(learnerData + System.lineSeparator());
@@ -271,41 +279,40 @@ public class GestionnaireDonnees {
       return resultMap;
 	}
     
-    public void updateNiveauApprenant(Apprenant apprenant) {
-    	try {
-    		File inputFile = new File("../DATA/Apprenants.txt");
-    		File tempFile = new File("../DATA/tempFile.txt");
-    		
-    		try (Scanner scanner = new Scanner(inputFile);
-    				FileWriter writer = new FileWriter(tempFile)) {
-    			
-    			while (scanner.hasNextLine()) {
-    				String line = scanner.nextLine();
-    				String[] parts = line.split(";");
-    				if (parts.length == 6) {
-    					String id = parts[0];
-    					if (!id.equals(apprenant.getId())) {
-    						writer.write(line + System.lineSeparator());
-    					} else {
-    						String mdp = parts[1];
-    						String nom = parts[2];
-    						String prenom = parts[3];
-    						String langue = parts[4];
-    						String niveau = apprenant.getBaremeNiveau().name();
-    						writer.write(id + ";" + mdp + ";" + nom + ";" + prenom + ";" + langue + ";" + niveau + System.lineSeparator());
-    					}
-    				}
-    			}
-    			scanner.close();
-    		}
-    		Files.move(tempFile.toPath(), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    		
-    		JOptionPane.showMessageDialog(null, "Votre compte a bien été supprimé.");
-    	} catch (FileNotFoundException e) {
-    		System.out.println("Fichier introuvable: " + e.getMessage());
-    	} catch (IOException e) {
-    		System.out.println("Erreur lors de la manipulation du fichier: " + e.getMessage());
-    	}
-    }
+  public void updateApprenant(Apprenant apprenant) {
+	try {
+		File inputFile = new File("../DATA/Apprenants.txt");
+		File tempFile = new File("../DATA/tempFile.txt");
+		
+		try (Scanner scanner = new Scanner(inputFile);
+				FileWriter writer = new FileWriter(tempFile)) {
+			
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				String[] parts = line.split(";");
+				if (parts.length == 7) {
+					String id = parts[0];
+					if (!id.equals(apprenant.getId())) {
+						writer.write(line + System.lineSeparator());
+					} else {
+						String mdp = parts[1];
+						String nom = parts[2];
+						String prenom = parts[3];
+						String langue = parts[4];
+						String niveau = apprenant.getBaremeNiveau().name();
+						String score = String.valueOf(apprenant.getScore());
+						writer.write(id + ";" + mdp + ";" + nom + ";" + prenom + ";" + langue + ";" + niveau + ";" + score + System.lineSeparator());
+					}
+				}
+			}
+			scanner.close();
+		}
+		Files.move(tempFile.toPath(), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	} catch (FileNotFoundException e) {
+		System.out.println("Fichier introuvable: " + e.getMessage());
+	} catch (IOException e) {
+		System.out.println("Erreur lors de la manipulation du fichier: " + e.getMessage());
+	}
+  }
 
 }

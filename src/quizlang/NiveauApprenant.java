@@ -1,5 +1,15 @@
 //package quizlang;
 //
+//import java.io.File;
+//import java.io.FileNotFoundException;
+//import java.io.FileWriter;
+//import java.io.IOException;
+//import java.nio.file.Files;
+//import java.nio.file.StandardCopyOption;
+//import java.util.Scanner;
+//
+//import javax.swing.JOptionPane;
+//
 //import utilisateurs.Apprenant;
 //import utilisateurs.Professeur;
 //
@@ -48,7 +58,6 @@
 //     * Constructeur de la classe NiveauxEleves. Initialise les attributs eleve, professeur, langue et niveau en fonction de l'objet Eleve et Professeur passés en paramètres. Le score est initialisé à 0 et le niveau à DEBUTANT ({@link Eleve#ajouterProf(Professeur prof) ajouterProf})
 //     *
 //     * @param eleve l'objet Eleve pour lequel on crée un niveau dans une langue
-//     * @param professeur l'objet Professeur en charge de l'enseignement de l'élève dans cette langue
 //     */
 //    public NiveauApprenant(Apprenant apprenant) {
 //        this.id = apprenant.getId();
@@ -148,7 +157,7 @@
 //     * @see NiveauxEleves#updateScore(Boolean, Dao)
 //     * @throws SQLException
 //     */
-//    public void updateNiveau(Langue lang, Dao niveauElevesDao) {
+//    public void updateNiveau(Langue lang) {
 //        if (this.getScore() < 20) {
 //            this.setNiveau(BaremeNiveau.DEBUTANT);
 //        } else if (this.getScore() >= 20 && this.getScore() < 40) {
@@ -156,8 +165,46 @@
 //        } else if (this.getScore() >= 40 && this.getScore() < 60) {
 //            this.setNiveau(BaremeNiveau.AVANCE);
 //        }
-//        niveauElevesDao.update(this);
 //    }
+//    
+//    public void updateNiveauApprenant(Apprenant apprenant) {
+//    	try {
+//    		File inputFile = new File("../DATA/Apprenants.txt");
+//    		File tempFile = new File("../DATA/tempFile.txt");
+//    		
+//    		try (Scanner scanner = new Scanner(inputFile);
+//    				FileWriter writer = new FileWriter(tempFile)) {
+//    			
+//    			while (scanner.hasNextLine()) {
+//    				String line = scanner.nextLine();
+//    				String[] parts = line.split(";");
+//    				if (parts.length == 7) {
+//    					String id = parts[0];
+//    					if (!id.equals(apprenant.getId())) {
+//    						writer.write(line + System.lineSeparator());
+//    					} else {
+//    						String mdp = parts[1];
+//    						String nom = parts[2];
+//    						String prenom = parts[3];
+//    						String langue = parts[4];
+//    						String niveau = apprenant.getBaremeNiveau().name();
+//    						String score = parts[6];
+//    						writer.write(id + ";" + mdp + ";" + nom + ";" + prenom + ";" + langue + ";" + niveau + ";" + score + System.lineSeparator());
+//    					}
+//    				}
+//    			}
+//    			scanner.close();
+//    		}
+//    		Files.move(tempFile.toPath(), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+//    		
+//    		JOptionPane.showMessageDialog(null, "Votre compte a bien été supprimé.");
+//    	} catch (FileNotFoundException e) {
+//    		System.out.println("Fichier introuvable: " + e.getMessage());
+//    	} catch (IOException e) {
+//    		System.out.println("Erreur lors de la manipulation du fichier: " + e.getMessage());
+//    	}
+//    }
+//    
 //
 //    /**
 //     *  Cette méthode permet de mettre à jour le score d'un élève pour un enregistrement de niveau donné.
@@ -170,7 +217,7 @@
 //     * @see ReponseEleve#valide()
 //     *  @throws SQLException
 //     */
-//    public void updateScore(Boolean eleveValide, Dao niveauElevesDao) {
+//    public void updateScore(Boolean eleveValide) {
 //        // Mise à jour du score de l'enregistrement
 //        if(eleveValide){
 //            this.score++;
@@ -178,7 +225,6 @@
 //        else {
 //            this.score--;
 //        }
-//        niveauElevesDao.update(this); // actualisation dans la base de données concrètement
 //    }
 //}
 //
