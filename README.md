@@ -5,11 +5,8 @@ Projet d'application dans le cadre du cours de Programmation Objet du Master TAL
 
 - [Aperçu](#aperçu)
 - [Fonctionnalités](#fonctionnalités)
-- [Captures d'écran](#captures-décran)
-- [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Contribuer](#contribuer)
-- [Licence](#licence)
+- [Règles de gestion](#règles-de-gestion)
+- [Installation et démo](#installation-et-démo)
 
 ## Aperçu
 
@@ -52,7 +49,7 @@ Une fois connecté, un apprenant peut :
 2. supprimer son compte ;
 3. se déconnecter
 
-## Les règles de gestion
+## Règles de gestion
 
 ### Le passage de niveau
 
